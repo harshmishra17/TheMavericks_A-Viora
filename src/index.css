@@ -1,0 +1,62 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --font-display: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-body: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+    --color-navy: #14213D;
+    --color-cream: #F4EDE0;
+    --color-coral: #FF6B5B;
+  }
+
+  body {
+    font-family: var(--font-body);
+    color: #14213D;
+    background-color: #F4EDE0;
+  }
+
+  h1, h2, h3, h4, .font-display {
+    font-family: var(--font-display);
+  }
+
+  code, pre, .font-mono {
+    font-family: var(--font-mono);
+  }
+}
+
+/* Subtle vertical line texture for the welcome area */
+.welcome-vertical-texture {
+  background-image: repeating-linear-gradient(
+    90deg,
+    rgba(20, 33, 61, 0.035) 0px,
+    rgba(20, 33, 61, 0.035) 1px,
+    transparent 1px,
+    transparent 28px
+  );
+}
+
+/* Restrained soft coral glow in welcome area only */
+.coral-welcome-glow {
+  background: radial-gradient(
+    ellipse 60% 50% at 85% 20%,
+    rgba(255, 107, 91, 0.14),
+    transparent 70%
+  );
+}
+
+/* Clean, restrained scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(20, 33, 61, 0.15);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(20, 33, 61, 0.28);
+}

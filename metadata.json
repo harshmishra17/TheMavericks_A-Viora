@@ -1,0 +1,6 @@
+{
+  "name": "A-viora Placement Assistant",
+  "description": "Your AI placement companion for college students to discuss concerns, discover opportunities, create verified applications, and practise interviews.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
