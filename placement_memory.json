@@ -1,0 +1,556 @@
+{
+  "profile": {
+    "id": "student-riya-sharma",
+    "name": "Riya Sharma",
+    "targetRole": "Backend internship",
+    "skills": [
+      "Python",
+      "SQL",
+      "Git",
+      "REST APIs",
+      "Flask"
+    ],
+    "locationPreferences": "Bengaluru / Remote",
+    "employmentType": "Internship",
+    "projectTitle": "College Attendance System",
+    "projectDescription": "Automated attendance tracking portal with secure role-based student and faculty access, daily CSV summary exports, and structured SQL storage.",
+    "projectReadme": "# College Attendance Management System\nCollaborative college project built by a team of 4.\nRepository: github.com/riya-sharma/college-attendance-system (fictional)\n\n## Modules\n1. Authentication & Faculty Auth (Built by teammate A)\n2. Attendance Schema & SQL Engine (Built by Riya Sharma)\n3. Web UI Templates (Built by teammate B)\n4. Notification Service (Built by teammate C)\n\n## Database Architecture\nSQLite / PostgreSQL compatible schema with strict unique constraints on student IDs and session timestamps to prevent duplicate submissions.",
+    "personalContribution": "Designed the database schema and queries: Authored relational tables, unique constraints, and SQL indexing for rapid student attendance lookups; built Flask endpoints for daily CSV exports.",
+    "claims": [
+      {
+        "id": "claim-1",
+        "text": "Built the entire attendance system.",
+        "status": "Needs clarification",
+        "sourceProject": "College Attendance System",
+        "sourceFilename": "README.md",
+        "sourceExcerpt": "Collaborative college project built by a team of 4. Features: Student roster, faculty marking, daily export.",
+        "statedContribution": "Team project with unclear individual ownership.",
+        "clarificationQuestion": "Which part did you personally build?",
+        "revisedText": "Designed the database schema and queries for a team-built attendance system.",
+        "resolved": false,
+        "notes": "README states 4-person team. Claiming entire project risks credibility during technical evaluation."
+      },
+      {
+        "id": "claim-2",
+        "text": "Designed relational database schema with unique constraints on student ID and session date to prevent duplicate attendance records.",
+        "status": "Source linked",
+        "sourceProject": "College Attendance System",
+        "sourceFilename": "schema.sql",
+        "sourceExcerpt": "CREATE TABLE attendance_records (id INTEGER PRIMARY KEY, student_id VARCHAR(16), session_date DATE, status VARCHAR(8), UNIQUE(student_id, session_date));",
+        "statedContribution": "Authored schema.sql and migration script.",
+        "resolved": true
+      },
+      {
+        "id": "claim-3",
+        "text": "Implemented optimized SQL queries and indexing to retrieve weekly attendance metrics for 350+ students in under 50ms.",
+        "status": "Student confirmed",
+        "sourceProject": "College Attendance System",
+        "sourceFilename": "db_queries.py",
+        "sourceExcerpt": "CREATE INDEX idx_student_session ON attendance_records(student_id, session_date);",
+        "statedContribution": "Wrote raw SQL queries and benchmarked response time with seeded test data.",
+        "resolved": true
+      },
+      {
+        "id": "claim-4",
+        "text": "Engineered Python Flask REST endpoints for recording daily attendance and exporting CSV summaries.",
+        "status": "Source linked",
+        "sourceProject": "College Attendance System",
+        "sourceFilename": "app.py",
+        "sourceExcerpt": "@app.route(\"/api/attendance/export\", methods=[\"GET\"])\ndef export_csv():\n    return generate_attendance_csv()",
+        "statedContribution": "Built the export route and CSV generation helper function.",
+        "resolved": true
+      }
+    ],
+    "rawResumeText": "RIYA SHARMA\nBengaluru, India | riya.sharma@college.edu | github.com/riya-sharma (fictional)\n\nOBJECTIVE:\nEnthusiastic computer science student seeking a Backend Internship to apply database modeling, Python programming, and API engineering skills to reliable software systems.\n\nSKILLS:\n- Languages: Python, SQL\n- Frameworks & Tools: Flask, SQLite, PostgreSQL basics, Git, RESTful APIs\n\nPROJECTS:\nCollege Attendance System (Team Project)\n- Built the entire attendance system.\n- Designed relational database schema with unique constraints on student ID and session date to prevent duplicate attendance records.\n- Implemented optimized SQL queries and indexing to retrieve weekly attendance metrics for 350+ students in under 50ms.\n- Engineered Python Flask REST endpoints for recording daily attendance and exporting CSV summaries.\n\nEDUCATION:\nB.Tech in Computer Science & Engineering (Final Year)\nRelevant Coursework: Database Management Systems, Data Structures & Algorithms, Object-Oriented Programming."
+  },
+  "jobs": [
+    {
+      "id": "job-1",
+      "role": "Backend Engineering Intern",
+      "company": "AcuityLogix Systems (Fictional)",
+      "location": "Bengaluru (Hybrid)",
+      "type": "Internship",
+      "requiredSkills": [
+        "Python",
+        "SQL",
+        "REST APIs",
+        "Docker"
+      ],
+      "deadline": "2026-11-25",
+      "description": "Join our data platform team building scalable microservices and database query optimization pipelines for internal analytics.",
+      "whyRelevant": "Direct match for Python and relational database modeling from your attendance portal project.",
+      "isFictional": true
+    },
+    {
+      "id": "job-2",
+      "role": "Python Backend Intern",
+      "company": "Nexis Cloud Labs (Fictional)",
+      "location": "Remote",
+      "type": "Internship",
+      "requiredSkills": [
+        "Python",
+        "Flask",
+        "SQL",
+        "Git"
+      ],
+      "deadline": "2026-11-20",
+      "description": "Help develop and maintain RESTful API endpoints for cloud infrastructure reporting and user access auditing.",
+      "whyRelevant": "Exact stack alignment with your Flask routes and SQL indexing work.",
+      "isFictional": true
+    },
+    {
+      "id": "job-3",
+      "role": "Database & Backend Associate Intern",
+      "company": "Krypton Dataworks (Fictional)",
+      "location": "Hyderabad (On-site)",
+      "type": "Internship",
+      "requiredSkills": [
+        "SQL",
+        "Python",
+        "PostgreSQL",
+        "Query Optimization"
+      ],
+      "deadline": "2026-12-02",
+      "description": "Focus on schema architecture, automated database migrations, and writing high-efficiency SQL queries for financial transaction feeds.",
+      "whyRelevant": "Deep alignment with your demonstrated skills in unique constraints, query indexing, and benchmark testing.",
+      "isFictional": true
+    },
+    {
+      "id": "job-4",
+      "role": "Junior API Developer Intern",
+      "company": "Veloce Mobility Labs (Fictional)",
+      "location": "Remote",
+      "type": "Internship",
+      "requiredSkills": [
+        "Python",
+        "REST APIs",
+        "FastAPI",
+        "Redis"
+      ],
+      "deadline": "2026-11-28",
+      "description": "Work with the telematics squad constructing fast ingest endpoints and queue consumers for electric vehicle telemetry.",
+      "whyRelevant": "Your Python and REST API foundation is directly transferable; provides a bridge into asynchronous frameworks.",
+      "isFictional": true
+    },
+    {
+      "id": "job-5",
+      "role": "Data Infrastructure Intern",
+      "company": "Meridian Analytics (Fictional)",
+      "location": "Bengaluru (In-office)",
+      "type": "Internship",
+      "requiredSkills": [
+        "Python",
+        "SQL",
+        "ETL Pipelines",
+        "Pandas"
+      ],
+      "deadline": "2026-12-05",
+      "description": "Support our core data team parsing structured datasets, scheduling validation runs, and publishing sanitized warehouse tables.",
+      "whyRelevant": "Your experience exporting and validating attendance CSV summaries mirrors data ingestion fundamentals.",
+      "isFictional": true
+    },
+    {
+      "id": "job-6",
+      "role": "Software Engineer - Backend (Graduate)",
+      "company": "Stratos Platform Technologies (Fictional)",
+      "location": "Bengaluru / Pune (Hybrid)",
+      "type": "Full-time",
+      "requiredSkills": [
+        "Python",
+        "SQL",
+        "System Design",
+        "Linux",
+        "Docker"
+      ],
+      "deadline": "2026-12-15",
+      "description": "Entry-level full-time backend role for graduating seniors passionate about resilient server architectures and clean domain modeling.",
+      "whyRelevant": "Strong trajectory if you intend to transition immediately from your final year into production backend systems.",
+      "isFictional": true
+    },
+    {
+      "id": "job-7",
+      "role": "Platform Operations & Backend Intern",
+      "company": "AuraGrid Solutions (Fictional)",
+      "location": "Remote",
+      "type": "Internship",
+      "requiredSkills": [
+        "Python",
+        "Git",
+        "Linux Basics",
+        "CI/CD"
+      ],
+      "deadline": "2026-11-22",
+      "description": "Build automated diagnostic scripts, review system logging schemas, and assist engineers with integration test harnesses.",
+      "whyRelevant": "Leverages your Python scripting and version control workflow.",
+      "isFictional": true
+    },
+    {
+      "id": "job-8",
+      "role": "Web Services & API Intern",
+      "company": "CognitiveWave Systems (Fictional)",
+      "location": "Gurugram (Hybrid)",
+      "type": "Internship",
+      "requiredSkills": [
+        "Python",
+        "Flask",
+        "Postman",
+        "SQL"
+      ],
+      "deadline": "2026-11-30",
+      "description": "Partner with senior developers to construct secure authentication layers, request validation middleware, and automated API docs.",
+      "whyRelevant": "Matches your Flask routing experience and SQL table relationships.",
+      "isFictional": true
+    },
+    {
+      "id": "job-9",
+      "role": "Junior Backend Integrations Specialist",
+      "company": "TetherLink Enterprise (Fictional)",
+      "location": "Remote",
+      "type": "Full-time",
+      "requiredSkills": [
+        "Python",
+        "SQL",
+        "Webhooks",
+        "REST APIs",
+        "PostgreSQL"
+      ],
+      "deadline": "2026-12-10",
+      "description": "Build dependable webhook receivers and database sync monitors bridging third-party CRM records with internal databases.",
+      "whyRelevant": "Great fit for students with verified schema integrity skills who value transactional consistency.",
+      "isFictional": true
+    },
+    {
+      "id": "job-10",
+      "role": "Distributed Systems Intern",
+      "company": "OmniStream Networks (Fictional)",
+      "location": "Bengaluru (On-site)",
+      "type": "Internship",
+      "requiredSkills": [
+        "Go",
+        "C++",
+        "Distributed Consensus",
+        "Networking"
+      ],
+      "deadline": "2026-11-18",
+      "description": "Research low-level packet processing and consensus mechanisms for distributed caching clusters.",
+      "whyRelevant": "Showcases contrast: Go and C++ required; Python background provides general computing concepts but stack differs.",
+      "isFictional": true
+    }
+  ],
+  "application": {
+    "id": "app-default-1",
+    "jobId": "job-1",
+    "role": "Backend Engineering Intern",
+    "company": "AcuityLogix Systems (Fictional)",
+    "resumeVersion": 1,
+    "coverNoteVersion": 1,
+    "resumeText": "RIYA SHARMA\nBengaluru, India | riya.sharma@college.edu\n\nTARGET ROLE:\nBackend Engineering Intern — AcuityLogix Systems (Fictional)\n\nTECHNICAL SUMMARY:\nComputer Science undergraduate with focused practical experience in relational database design, Python service development, and query indexing. Strives for honest, verifiable software representations backed by actual project implementation.\n\nCORE SKILLS:\nPython · SQL · Relational Schema Modeling · Flask · RESTful APIs · Indexing & Query Tuning · Git\n\nEVIDENCE-BACKED PROJECT EXPERIENCE:\nCollege Attendance System (4-Person Team Project)\n- Designed relational database schema with unique constraints on student ID and session date to prevent duplicate attendance records. [Source: schema.sql]\n- Implemented optimized SQL queries and indexing to retrieve weekly attendance metrics for 350+ students in under 50ms. [Source: db_queries.py]\n- Engineered Python Flask REST endpoints for recording daily attendance and exporting CSV summaries. [Source: app.py]\n- Designed the database schema and queries for a team-built attendance system. [Clarified Contribution]\n\nEDUCATION:\nB.Tech in Computer Science & Engineering | Anticipated 2026",
+    "coverNoteText": "Dear Hiring Team at AcuityLogix Systems (Fictional),\n\nI am applying for the Backend Engineering Intern position.\n\nIn my recent academic project—a College Attendance Management System built with a team of four—I took personal ownership of the database tier. Specifically, I designed the relational schema, configured compound unique constraints on student identifiers and session dates to eliminate duplicate entries, and implemented query indexing that retrieved 350+ student records in under 50 milliseconds.\n\nYour opening highlights Python, SQL, and database optimization. While I am still gaining hands-on familiarity with Docker in production, my grounding in Python REST APIs and relational consistency enables me to contribute immediately to your microservices team.\n\nI look forward to discussing how my project experience aligns with your backend engineering needs.\n\nSincerely,\nRiya Sharma",
+    "includedClaimIds": [
+      "claim-2",
+      "claim-3",
+      "claim-4",
+      "claim-1"
+    ],
+    "status": "Ready for review",
+    "approvedVersion": null,
+    "approvedAt": null,
+    "simulatedSentAt": null,
+    "simulatedReceiptId": null,
+    "lastSavedAt": "2026-11-11T05:58:29.131Z",
+    "isDirty": false
+  },
+  "reminders": [
+    {
+      "id": "rem-1794376815830",
+      "title": "Verify database schema indexing",
+      "dueDateTime": "2026-11-12T06:00:15.830Z",
+      "jobRole": "Backend Engineering Intern",
+      "notes": "Review relational tables, unique constraints, and SQL indexing for attendance lookups in College Attendance System.",
+      "completed": false,
+      "createdAt": "2026-11-11T06:00:15.830Z"
+    },
+    {
+      "id": "rem-1",
+      "title": "Review attendance schema questions before AcuityLogix review",
+      "dueDateTime": "2026-11-12T05:58:29.131Z",
+      "jobRole": "Backend Engineering Intern",
+      "notes": "Practise explaining the unique composite index on (student_id, session_date).",
+      "completed": false,
+      "createdAt": "2026-11-11T02:58:29.131Z"
+    },
+    {
+      "id": "rem-2",
+      "title": "Follow up on Nexis Cloud Labs submission deadline",
+      "dueDateTime": "2026-11-13T05:58:29.131Z",
+      "jobRole": "Python Backend Intern",
+      "notes": "Check submission requirements and ensure cover note is tailored.",
+      "completed": false,
+      "createdAt": "2026-11-10T17:58:29.131Z"
+    }
+  ],
+  "interviewHistory": [
+    {
+      "id": "att-seed-1",
+      "mode": "Project interview",
+      "question": "How did you prevent duplicate attendance records in your college project schema?",
+      "context": "College Attendance System — Database tier",
+      "userAnswer": "I created a composite unique constraint on the student ID and session date columns in the attendance_records table. If an insert occurs with the same pair on the same day, the database raises an integrity error which the API handles gracefully.",
+      "feedback": {
+        "whatWasClear": "Precise explanation of the database constraint mechanism (composite unique index) and why it works.",
+        "whatNeedsImprovement": "Could mention how the Flask backend surfaces that constraint error to the user without crashing.",
+        "practicalSuggestion": "State: \"In SQLite/Postgres, UNIQUE(student_id, session_date) enforces idempotency at the storage engine level.\"",
+        "followUpQuestion": "What HTTP status code did your Flask route return when that duplicate error was caught?"
+      },
+      "timestamp": "2026-11-10T09:58:29.133Z"
+    }
+  ],
+  "weakAreas": [
+    {
+      "id": "wa-1",
+      "topic": "Explaining Flask Error Handling & HTTP Status Codes",
+      "details": "Practise bridging the database constraint exception to the REST API response layer (returning 409 Conflict instead of 500).",
+      "practicedCount": 1
+    }
+  ],
+  "chatHistory": [
+    {
+      "id": "msg-init-1",
+      "sender": "assistant",
+      "content": "Hi Riya, welcome to A-viora. Your next opportunity starts with your actual work. I see your college attendance project with Python and SQL. Whether you want to discuss placement worries, match verified jobs, refine your resume, or practise tough questions, I'm right here with you.",
+      "timestamp": "2026-11-11T05:58:29.133Z",
+      "suggestedActions": [
+        {
+          "label": "Help me choose a role",
+          "actionType": "prompt",
+          "target": "Help me choose a role based on my Python and SQL skills"
+        },
+        {
+          "label": "Review my project claim",
+          "actionType": "navigate",
+          "target": "studio"
+        },
+        {
+          "label": "Find matching internships",
+          "actionType": "navigate",
+          "target": "opportunities"
+        },
+        {
+          "label": "Practise my explanation",
+          "actionType": "navigate",
+          "target": "practice"
+        }
+      ]
+    },
+    {
+      "id": "msg-1794376712522-student",
+      "sender": "student",
+      "content": "Find backend internship roles requiring Python and SQL",
+      "timestamp": "2026-11-11T05:58:32.522Z"
+    },
+    {
+      "id": "msg-1794376742834-student",
+      "sender": "student",
+      "content": "Find backend internship roles requiring Python and SQL",
+      "timestamp": "2026-11-11T05:59:02.834Z"
+    },
+    {
+      "id": "msg-1794376764811-assistant",
+      "sender": "assistant",
+      "content": "Here are the backend internship roles currently open that match your Python and SQL background:\n\n1. **Nexis Cloud Labs** – *Python Backend Intern*  \n   - **Required Skills:** Python, Flask, SQL, Git  \n   - **Deadline:** November 20, 2026  \n   - **Fit:** A direct match for your experience with Flask endpoints, SQL schema design, and Git.\n\n2. **Krypton Dataworks** – *Database & Backend Associate Intern*  \n   - **Required Skills:** SQL, Python, PostgreSQL, Query Optimization  \n   - **Deadline:** December 2, 2026  \n   - **Fit:** Closely aligns with your hands-on work in relational table design, indexing, and query optimization.\n\n3. **AcuityLogix Systems** – *Backend Engineering Intern*  \n   - **Required Skills:** Python, SQL, REST APIs, Docker  \n   - **Deadline:** November 25, 2026  \n   - *(Note: You already have a drafted application here currently marked \"Ready for review\".)*\n\nWould you like to review your current draft for AcuityLogix first, or should we look into preparing an application for Nexis Cloud Labs?",
+      "timestamp": "2026-11-11T05:59:24.811Z",
+      "toolActivities": [
+        {
+          "toolName": "search_jobs",
+          "summary": "Queried catalog: found 4 matching fictional opportunities.",
+          "status": "success",
+          "linkTarget": "opportunities"
+        }
+      ],
+      "suggestedActions": [
+        {
+          "label": "Open in Opportunities",
+          "actionType": "navigate",
+          "target": "opportunities"
+        }
+      ]
+    },
+    {
+      "id": "msg-1794376777543-student",
+      "sender": "student",
+      "content": "Remind me tomorrow at 4pm to verify database schema indexing",
+      "timestamp": "2026-11-11T05:59:37.543Z"
+    },
+    {
+      "id": "msg-1794376785745-assistant",
+      "sender": "assistant",
+      "content": "Here are open backend internship roles matching your skills in Python and SQL:\n\n1. **Nexis Cloud Labs** – *Python Backend Intern*  \n   - **Required Skills:** Python, Flask, SQL, Git  \n   - **Deadline:** November 20, 2026  \n   - *Great alignment with your College Attendance System project (Flask, relational schema design, Git).*\n\n2. **AcuityLogix Systems** – *Backend Engineering Intern*  \n   - **Required Skills:** Python, SQL, REST APIs, Docker  \n   - **Deadline:** November 25, 2026  \n   - *Matches your core stack (Python, SQL, REST APIs).*\n\n3. **Krypton Dataworks** – *Database & Backend Associate Intern*  \n   - **Required Skills:** SQL, Python, PostgreSQL, Query Optimization  \n   - **Deadline:** December 2, 2026  \n   - *Strong fit for your indexing and SQL optimization experience.*\n\nWould you like to look closer at the **Nexis Cloud Labs** opening and prepare bullet points highlighting your Flask and database work for it?",
+      "timestamp": "2026-11-11T05:59:45.745Z",
+      "toolActivities": [
+        {
+          "toolName": "search_jobs",
+          "summary": "Queried catalog: found 4 matching fictional opportunities.",
+          "status": "success",
+          "linkTarget": "opportunities"
+        }
+      ],
+      "suggestedActions": [
+        {
+          "label": "Open in Opportunities",
+          "actionType": "navigate",
+          "target": "opportunities"
+        }
+      ]
+    },
+    {
+      "id": "msg-1794376834902-assistant",
+      "sender": "assistant",
+      "content": "I've set a reminder for you tomorrow at 4:00 PM to verify your database schema indexing for the College Attendance System.\n\nWould you like to quickly review the query execution plans or indexing strategies together before then?",
+      "timestamp": "2026-11-11T06:00:34.902Z",
+      "toolActivities": [
+        {
+          "toolName": "create_reminder",
+          "summary": "Saved reminder: \"Verify database schema indexing\" due 11/12/2026.",
+          "status": "success",
+          "linkTarget": "overview"
+        }
+      ],
+      "suggestedActions": [
+        {
+          "label": "Open in Overview",
+          "actionType": "navigate",
+          "target": "overview"
+        }
+      ]
+    },
+    {
+      "id": "msg-1794376840708-student",
+      "sender": "student",
+      "content": "Please send my application to AcuityLogix right away",
+      "timestamp": "2026-11-11T06:00:40.708Z"
+    },
+    {
+      "id": "msg-1794376842998-assistant",
+      "sender": "assistant",
+      "content": "**Sending Blocked: Student Approval Required**\n\nYour application draft for **Backend Engineering Intern** at **AcuityLogix Systems (Fictional)** is currently in **'Ready for review'** status.\n\nA-viora strictly enforces that **no application can be sent without your explicit review and approval**. This guarantees that all claims match your real code contributions.\n\nPlease review your draft in the **Applications Tracker** and click **\"Approve Current Draft\"** before dispatching.",
+      "timestamp": "2026-11-11T06:00:42.998Z",
+      "toolActivities": [
+        {
+          "toolName": "check_application_approval",
+          "summary": "Application status: \"Ready for review\" (Sending permitted: false).",
+          "status": "success",
+          "linkTarget": "tracker"
+        }
+      ],
+      "suggestedActions": [
+        {
+          "label": "Go to Approval Tracker",
+          "actionType": "navigate",
+          "target": "tracker"
+        },
+        {
+          "label": "Review in Studio",
+          "actionType": "navigate",
+          "target": "studio"
+        }
+      ],
+      "isSimulatedDemo": true
+    },
+    {
+      "id": "msg-1794376846369-student",
+      "sender": "student",
+      "content": "Generate a verified resume bullet for database indexing",
+      "timestamp": "2026-11-11T06:00:46.369Z"
+    },
+    {
+      "id": "msg-1794376857098-assistant",
+      "sender": "assistant",
+      "content": "Here is a verified resume bullet grounded directly in your work on the **College Attendance System**:\n\n> **• Designed relational database schema with unique composite constraints on `(student_id, session_date)` and indexed lookup queries, preventing duplicate attendance logs and ensuring rapid retrieval across 350+ students.** *(Verified Source: `schema.sql`)*\n\nHow does this phrasing feel to you, or would you like to emphasize a specific metric (like query lookup speed or CSV export integration) next?",
+      "timestamp": "2026-11-11T06:00:57.098Z",
+      "toolActivities": [
+        {
+          "toolName": "generate_document",
+          "summary": "Generated verified resume bullet for Backend Engineering Intern (Studio draft v2).",
+          "status": "success",
+          "linkTarget": "studio"
+        }
+      ],
+      "suggestedActions": [
+        {
+          "label": "Open in Studio",
+          "actionType": "navigate",
+          "target": "studio"
+        }
+      ]
+    }
+  ],
+  "activities": [
+    {
+      "id": "act-1794376908773-5bng",
+      "description": "Restored sample student profile (Riya Sharma).",
+      "timestamp": "2026-11-11T06:01:48.773Z",
+      "type": "profile"
+    },
+    {
+      "id": "act-1794376897493-m8ps",
+      "description": "Application draft edited. Earlier approval revoked pending student re-review.",
+      "timestamp": "2026-11-11T06:01:37.493Z",
+      "type": "application"
+    },
+    {
+      "id": "act-1794376890428-iqth",
+      "description": "Simulated application sent to AcuityLogix Systems (Fictional). Receipt: AVIOR-SIM-MWBPO5RV-7714",
+      "timestamp": "2026-11-11T06:01:30.428Z",
+      "type": "application"
+    },
+    {
+      "id": "act-1794376886887-r58y",
+      "description": "Approved application draft v2 for Backend Engineering Intern.",
+      "timestamp": "2026-11-11T06:01:26.887Z",
+      "type": "application"
+    },
+    {
+      "id": "act-1794376883161-j5ni",
+      "description": "Clarified claim \"claim-1\": \"Designed the database schema and queries for a team-built attendance system.\"",
+      "timestamp": "2026-11-11T06:01:23.161Z",
+      "type": "claim"
+    },
+    {
+      "id": "act-1794376849479-prfm",
+      "description": "Agent generated verified resume bullet and saved to Studio draft v2.",
+      "timestamp": "2026-11-11T06:00:49.479Z",
+      "type": "application"
+    },
+    {
+      "id": "act-1794376815850-e135",
+      "description": "Agent scheduled reminder \"Verify database schema indexing\" due 11/12/2026.",
+      "timestamp": "2026-11-11T06:00:15.850Z",
+      "type": "reminder"
+    },
+    {
+      "id": "act-1794376782346-gfo8",
+      "description": "Agent queried job catalog for \"backend\". Returned 4 listings.",
+      "timestamp": "2026-11-11T05:59:42.346Z",
+      "type": "profile"
+    },
+    {
+      "id": "act-1794376760199-0sk6",
+      "description": "Agent queried job catalog for \"backend\". Returned 4 listings.",
+      "timestamp": "2026-11-11T05:59:20.199Z",
+      "type": "profile"
+    },
+    {
+      "id": "act-1",
+      "description": "Initialized sample profile for Riya Sharma with College Attendance System facts.",
+      "timestamp": "2026-11-11T03:58:29.133Z",
+      "type": "profile"
+    },
+    {
+      "id": "act-2",
+      "description": "Flagged claim \"Built the entire attendance system\" for individual contribution clarification.",
+      "timestamp": "2026-11-11T05:08:29.133Z",
+      "type": "claim"
+    }
+  ],
+  "lastPersistedAt": "2026-11-11T06:01:48.773Z"
+}
