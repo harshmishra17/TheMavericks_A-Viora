@@ -351,7 +351,7 @@ export const ApprovalTracker: React.FC<ApprovalTrackerProps> = ({
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs">
             <thead>
-              <tr className="border-b border-[#E8DFCF] text-[#14213D]/60 uppercase font-mono text-[10px]">
+              <tr className="border-b border-[#E8DFCF] text-[#475569] uppercase font-mono text-[10px] font-bold">
                 <th className="py-2.5 px-3">Role & Company</th>
                 <th className="py-2.5 px-3">Status</th>
                 <th className="py-2.5 px-3">Deadline</th>
@@ -363,22 +363,22 @@ export const ApprovalTracker: React.FC<ApprovalTrackerProps> = ({
             <tbody className="divide-y divide-[#E8DFCF]">
               <tr className="hover:bg-[#FAF7F2] transition-colors">
                 <td className="py-3 px-3">
-                  <div className="font-bold text-[#14213D]">{application.role}</div>
-                  <div className="text-[11px] text-[#14213D]/60">{application.company}</div>
+                  <div className="font-bold text-[#0F172A]">{application.role}</div>
+                  <div className="text-[11px] text-[#475569]">{application.company}</div>
                 </td>
                 <td className="py-3 px-3">
-                  <span className={`px-2 py-0.5 rounded font-mono text-[10px] font-semibold border ${getStatusColor(application.status)}`}>
+                  <span className={`px-2 py-0.5 rounded font-mono text-[10px] font-bold border ${getStatusColor(application.status)}`}>
                     {application.status}
                   </span>
                 </td>
-                <td className="py-3 px-3 font-mono text-[#14213D]/70">
+                <td className="py-3 px-3 font-mono text-[#334155] font-medium">
                   {job?.deadline || '2026-11-25'}
                 </td>
-                <td className="py-3 px-3 font-mono text-[#14213D]/70">
+                <td className="py-3 px-3 font-mono text-[#334155] font-medium">
                   {new Date(application.lastSavedAt).toLocaleDateString()}
                 </td>
                 <td className="py-3 px-3">
-                  <div className="font-mono text-[11px] text-[#14213D]/70 mb-1">
+                  <div className="font-mono text-[11px] text-[#334155] font-medium mb-1">
                     Resume v{application.resumeVersion} · Cover Note v{application.coverNoteVersion}
                   </div>
                   <div className="flex items-center gap-1.5">
@@ -395,7 +395,7 @@ export const ApprovalTracker: React.FC<ApprovalTrackerProps> = ({
                           unresolvedClaims: profile.claims.filter(c => !c.resolved)
                         })
                       }
-                      className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-[#FAF7F2] border border-[#E8DFCF] hover:bg-[#E8DFCF] text-[#14213D] text-[10px] font-semibold"
+                      className="inline-flex items-center gap-1 px-2 py-1 rounded bg-[#FAF7F2] border border-[#CBD5E1] hover:bg-[#E8DFCF] text-[#0F172A] text-[10px] font-bold"
                       title="Download Resume as PDF"
                     >
                       <Download className="w-3 h-3 text-[#FF6B5B]" />
@@ -412,7 +412,7 @@ export const ApprovalTracker: React.FC<ApprovalTrackerProps> = ({
                           version: application.coverNoteVersion
                         })
                       }
-                      className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-[#FAF7F2] border border-[#E8DFCF] hover:bg-[#E8DFCF] text-[#14213D] text-[10px] font-semibold"
+                      className="inline-flex items-center gap-1 px-2 py-1 rounded bg-[#FAF7F2] border border-[#CBD5E1] hover:bg-[#E8DFCF] text-[#0F172A] text-[10px] font-bold"
                       title="Download Cover Letter as PDF"
                     >
                       <Download className="w-3 h-3 text-[#FF6B5B]" />
@@ -424,14 +424,14 @@ export const ApprovalTracker: React.FC<ApprovalTrackerProps> = ({
                   {isSent ? (
                     <button
                       onClick={() => onNavigate('practice')}
-                      className="text-xs font-semibold text-[#FF6B5B] hover:underline"
+                      className="text-xs font-bold text-[#FF6B5B] hover:underline"
                     >
                       Practise Interview →
                     </button>
                   ) : (
                     <button
                       onClick={() => onNavigate('studio')}
-                      className="text-xs font-semibold text-[#14213D] hover:underline"
+                      className="text-xs font-bold text-[#14213D] hover:underline"
                     >
                       Review Draft →
                     </button>

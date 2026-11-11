@@ -22,13 +22,21 @@ import {
   InterviewAttempt,
   SavedWeakArea,
   ChatMessage,
-  AppActivity
+  AppActivity,
+  JobDescriptionAnalysis,
+  SkillGapReport,
+  PreparationRoadmap,
+  JobInterviewQuestion
 } from './types';
 import {
   SAMPLE_STUDENT,
   FICTIONAL_JOB_LISTINGS,
   INITIAL_APPLICATION,
-  INITIAL_REMINDERS
+  INITIAL_REMINDERS,
+  INITIAL_JOB_ANALYSIS,
+  INITIAL_SKILL_GAP_REPORT,
+  INITIAL_ROADMAP,
+  INITIAL_JOB_QUESTIONS
 } from './data/defaultData';
 import { AlertCircle, Bell, X } from 'lucide-react';
 
@@ -112,6 +120,42 @@ export default function App() {
     }
   ]);
 
+  const [jobAnalysis, setJobAnalysis] = useState<JobDescriptionAnalysis | null>(() => {
+    try {
+      const saved = localStorage.getItem('aviora_job_analysis');
+      return saved ? JSON.parse(saved) : INITIAL_JOB_ANALYSIS;
+    } catch {
+      return INITIAL_JOB_ANALYSIS;
+    }
+  });
+
+  const [gapReport, setGapReport] = useState<SkillGapReport | null>(() => {
+    try {
+      const saved = localStorage.getItem('aviora_gap_report');
+      return saved ? JSON.parse(saved) : INITIAL_SKILL_GAP_REPORT;
+    } catch {
+      return INITIAL_SKILL_GAP_REPORT;
+    }
+  });
+
+  const [roadmap, setRoadmap] = useState<PreparationRoadmap | null>(() => {
+    try {
+      const saved = localStorage.getItem('aviora_roadmap');
+      return saved ? JSON.parse(saved) : INITIAL_ROADMAP;
+    } catch {
+      return INITIAL_ROADMAP;
+    }
+  });
+
+  const [jobQuestions, setJobQuestions] = useState<JobInterviewQuestion[]>(() => {
+    try {
+      const saved = localStorage.getItem('aviora_job_questions');
+      return saved ? JSON.parse(saved) : INITIAL_JOB_QUESTIONS;
+    } catch {
+      return INITIAL_JOB_QUESTIONS;
+    }
+  });
+
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([
     {
       id: 'msg-init-1',
@@ -147,6 +191,22 @@ export default function App() {
   useEffect(() => {
     localStorage.setItem('aviora_reminders', JSON.stringify(reminders));
   }, [reminders]);
+
+  useEffect(() => {
+    if (jobAnalysis) localStorage.setItem('aviora_job_analysis', JSON.stringify(jobAnalysis));
+  }, [jobAnalysis]);
+
+  useEffect(() => {
+    if (gapReport) localStorage.setItem('aviora_gap_report', JSON.stringify(gapReport));
+  }, [gapReport]);
+
+  useEffect(() => {
+    if (roadmap) localStorage.setItem('aviora_roadmap', JSON.stringify(roadmap));
+  }, [roadmap]);
+
+  useEffect(() => {
+    if (jobQuestions) localStorage.setItem('aviora_job_questions', JSON.stringify(jobQuestions));
+  }, [jobQuestions]);
 
   // Initial fetch from backend if server is active
   useEffect(() => {
@@ -201,6 +261,18 @@ export default function App() {
         if (Array.isArray(data) && data.length > 0) setActivities(data);
       })
       .catch(() => {});
+
+    fetch('/api/analysis')
+      .then(res => res.json())
+      .then(data => {
+        if (data.analysis) setJobAnalysis(data.analysis);
+        if (data.gapReport) setGapReport(data.gapReport);
+        if (data.roadmap) setRoadmap(data.roadmap);
+        if (Array.isArray(data.jobQuestions) && data.jobQuestions.length > 0) {
+          setJobQuestions(data.jobQuestions);
+        }
+      })
+      .catch(() => {});
   }, []);
 
   // Helper for logging real activity
@@ -217,6 +289,77 @@ export default function App() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(act)
     }).catch(() => {});
+  };
+
+  const handleAnalyzeJob = async (
+    jobIdOrRole?: string,
+    customText?: string,
+    customRole?: string,
+    customCompany?: string
+  ) => {
+    let role = customRole || profile.targetRole || 'Backend Engineering Intern';
+    let company = customCompany || 'AcuityLogix Systems';
+    let description = customText || '';
+
+    if (jobIdOrRole && !customText) {
+      // It's a jobId from a curated listing
+      const foundJob = jobs.find(j => j.id === jobIdOrRole);
+      if (foundJob) {
+        role = foundJob.role;
+        company = foundJob.company;
+        description = `${foundJob.role} at ${foundJob.company}. Description: ${foundJob.description}. Required Skills: ${foundJob.requiredSkills.join(', ')}. Why relevant: ${foundJob.whyRelevant}`;
+      }
+    } else if (customText) {
+      description = customText;
+      if (customRole) role = customRole;
+      if (customCompany) company = customCompany;
+    }
+
+    try {
+      const res = await fetch('/api/analyze-job', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ role, company, description })
+      });
+      const data = await res.json();
+      if (data && data.success) {
+        if (data.analysis) setJobAnalysis(data.analysis);
+        if (data.gapReport) setGapReport(data.gapReport);
+        if (data.roadmap) setRoadmap(data.roadmap);
+        if (data.jobQuestions) setJobQuestions(data.jobQuestions);
+        addActivity(`AI analyzed job "${role}" at ${company} and prepared a 7-day roadmap.`, 'roadmap');
+      }
+      return data;
+    } catch (err: any) {
+      console.error('Failed to analyze job:', err);
+      throw err;
+    }
+  };
+
+  const handleToggleRoadmapTask = async (taskId: string) => {
+    // Optimistic update
+    setRoadmap(prev => {
+      if (!prev) return prev;
+      return {
+        ...prev,
+        dailyPlan: prev.dailyPlan.map(day => ({
+          ...day,
+          completed: day.id === taskId ? !day.completed : day.completed
+        }))
+      };
+    });
+
+    try {
+      const res = await fetch('/api/roadmap/toggle-task', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ taskId })
+      });
+      const data = await res.json();
+      if (data && data.roadmap) {
+        setRoadmap(data.roadmap);
+      }
+    } catch {}
   };
 
   // Actions
@@ -662,6 +805,9 @@ export default function App() {
                 setActiveTab('studio');
               }}
               onSelectJobForApplication={handleSelectJobForApplication}
+              gapReport={gapReport}
+              roadmap={roadmap}
+              onToggleRoadmapTask={handleToggleRoadmapTask}
             />
           )}
 
@@ -673,6 +819,12 @@ export default function App() {
               savedJobIds={savedJobIds}
               onToggleSaveJob={handleToggleSaveJob}
               onNavigateToStudio={() => setActiveTab('studio')}
+              onNavigateToPractice={() => setActiveTab('practice')}
+              activeAnalysis={jobAnalysis}
+              activeGapReport={gapReport}
+              activeRoadmap={roadmap}
+              onAnalyzeJob={handleAnalyzeJob}
+              onToggleRoadmapTask={handleToggleRoadmapTask}
             />
           )}
 
@@ -707,6 +859,7 @@ export default function App() {
               application={application}
               history={interviewHistory}
               weakAreas={weakAreas}
+              jobQuestions={jobQuestions}
               onSubmitAnswer={handleSubmitInterviewAnswer}
             />
           )}

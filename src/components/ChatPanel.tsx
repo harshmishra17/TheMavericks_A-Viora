@@ -82,23 +82,23 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
   return (
     <aside className="fixed inset-y-0 right-0 z-50 w-full sm:w-[420px] md:w-[460px] bg-[#FFFFFF] border-l border-[#E8DFCF] shadow-2xl flex flex-col justify-between">
       {/* Header */}
-      <div className="px-5 py-4 border-b border-[#E8DFCF] bg-[#14213D] text-[#F4EDE0] flex items-center justify-between">
+      <div className="px-5 py-4 border-b border-[#1E2F52] bg-[#14213D] text-[#F4EDE0] flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-lg bg-[#FF6B5B] flex items-center justify-center text-white font-bold font-display text-sm">
+          <div className="w-8 h-8 rounded-lg bg-[#FF6B5B] flex items-center justify-center text-[#14213D] font-extrabold font-display text-sm">
             A
           </div>
           <div>
-            <h2 className="font-display font-semibold text-base text-white tracking-tight leading-tight">
+            <h2 className="font-display font-bold text-base text-white tracking-tight leading-tight">
               Talk to A-viora
             </h2>
-            <p className="text-xs text-[#F4EDE0]/70 mt-0.5">
+            <p className="text-xs text-[#F4EDE0] mt-0.5">
               Discuss your goals, questions and placement concerns.
             </p>
           </div>
         </div>
         <button
           onClick={onClose}
-          className="p-1.5 rounded-md hover:bg-[#1E2F52] text-[#F4EDE0]/70 hover:text-white transition-colors"
+          className="p-1.5 rounded-md hover:bg-[#1E2F52] text-[#F4EDE0] hover:text-white transition-colors"
           aria-label="Close chat"
         >
           <X className="w-5 h-5" />
@@ -107,7 +107,7 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
 
       {/* Mode notice if demo */}
       {isDemoMode && (
-        <div className="px-4 py-2 bg-[#F4EDE0] border-b border-[#E8DFCF] flex items-center gap-2 text-xs text-[#14213D]/80">
+        <div className="px-4 py-2 bg-[#F4EDE0] border-b border-[#E8DFCF] flex items-center gap-2 text-xs text-[#0F172A] font-medium">
           <Info className="w-4 h-4 text-[#FF6B5B] shrink-0" />
           <span>Demo Mode · Built-in agent rules active (no live Gemini key detected).</span>
         </div>
@@ -126,7 +126,7 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
                 className={`max-w-[88%] rounded-xl p-3.5 text-sm leading-relaxed ${
                   isStudent
                     ? 'bg-[#14213D] text-[#F4EDE0] rounded-br-xs shadow-xs'
-                    : 'bg-[#FFFFFF] text-[#14213D] border border-[#E8DFCF] rounded-bl-xs shadow-xs'
+                    : 'bg-[#FFFFFF] text-[#0F172A] border border-[#CBD5E1] rounded-bl-xs shadow-xs font-medium'
                 }`}
               >
                 {/* Message body */}
@@ -138,19 +138,19 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
                     {msg.toolActivities.map((tool, idx) => (
                       <div
                         key={idx}
-                        className="text-xs flex items-center justify-between gap-2 p-2 rounded bg-[#F4EDE0]/80 text-[#14213D]"
+                        className="text-xs flex items-center justify-between gap-2 p-2 rounded-lg bg-[#F4EDE0] text-[#0F172A] border border-[#E8DFCF]"
                       >
-                        <div className="flex items-center gap-2">
-                          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-                          <span className="font-mono font-medium text-[11px] text-[#14213D]/70">
+                        <div className="flex items-center gap-2 min-w-0">
+                          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-700 shrink-0" />
+                          <span className="font-mono font-bold text-[11px] text-[#0F172A]">
                             {tool.toolName}
                           </span>
-                          <span className="truncate max-w-[200px] text-[11px]">{tool.summary}</span>
+                          <span className="truncate max-w-[180px] text-[11px] text-[#334155]">{tool.summary}</span>
                         </div>
                         {tool.linkTarget && (
                           <button
                             onClick={() => onNavigate(tool.linkTarget as ActiveTab)}
-                            className="text-[#FF6B5B] hover:text-[#E05A4A] font-semibold text-[11px] flex items-center gap-1 shrink-0"
+                            className="text-[#FF6B5B] hover:text-[#E05A4A] font-bold text-[11px] flex items-center gap-1 shrink-0"
                           >
                             Open <ArrowRight className="w-3 h-3" />
                           </button>
@@ -162,7 +162,7 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
               </div>
 
               {/* Timestamp & Simulated tag */}
-              <div className="flex items-center gap-2 mt-1 px-1 text-[10px] text-[#14213D]/50 font-mono">
+              <div className="flex items-center gap-2 mt-1 px-1 text-[10px] text-[#475569] font-mono">
                 <span>{new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
                 {msg.isSimulatedDemo && <span>· Simulated</span>}
               </div>
@@ -181,10 +181,10 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
                           textareaRef.current?.focus();
                         }
                       }}
-                      className="text-xs px-2.5 py-1 rounded bg-[#E8DFCF]/70 hover:bg-[#E8DFCF] text-[#14213D] font-medium transition-colors border border-[#14213D]/10 flex items-center gap-1.5"
+                      className="text-xs px-2.5 py-1 rounded-md bg-white hover:bg-[#F4EDE0] text-[#0F172A] font-bold transition-colors border border-[#CBD5E1] shadow-2xs flex items-center gap-1.5"
                     >
                       <span>{action.label}</span>
-                      <ArrowRight className="w-3 h-3 opacity-60" />
+                      <ArrowRight className="w-3 h-3 text-[#FF6B5B]" />
                     </button>
                   ))}
                 </div>
@@ -195,7 +195,7 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
 
         {isLoading && (
           <div className="flex items-start">
-            <div className="bg-[#FFFFFF] border border-[#E8DFCF] rounded-xl rounded-bl-xs p-3.5 shadow-xs text-xs text-[#14213D]/70 flex items-center gap-2">
+            <div className="bg-[#FFFFFF] border border-[#CBD5E1] rounded-xl rounded-bl-xs p-3.5 shadow-xs text-xs text-[#0F172A] flex items-center gap-2 font-medium">
               <span className="inline-block w-2 h-2 rounded-full bg-[#FF6B5B] animate-ping" />
               <span>A-viora is reviewing facts and formulating practical guidance...</span>
             </div>
@@ -207,7 +207,7 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
 
       {/* Suggested Prompts Shelf */}
       <div className="p-2.5 bg-[#FFFFFF] border-t border-[#E8DFCF] overflow-x-auto">
-        <div className="flex items-center gap-2 text-xs text-[#14213D]/60 mb-1.5 px-1 font-medium">
+        <div className="flex items-center gap-2 text-xs text-[#0F172A] mb-1.5 px-1 font-bold">
           <Sparkles className="w-3.5 h-3.5 text-[#FF6B5B]" />
           <span>Quick Placement Prompts</span>
         </div>
@@ -219,7 +219,7 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
                 setInputText(p.text);
                 textareaRef.current?.focus();
               }}
-              className="text-xs whitespace-nowrap px-2.5 py-1 rounded-md bg-[#F4EDE0] hover:bg-[#E8DFCF] text-[#14213D] font-medium transition-colors border border-[#E8DFCF] shrink-0"
+              className="text-xs whitespace-nowrap px-2.5 py-1.5 rounded-md bg-[#F4EDE0] hover:bg-[#E8DFCF] text-[#0F172A] font-bold transition-colors border border-[#CBD5E1] shrink-0"
             >
               {p.label}
             </button>
@@ -230,12 +230,12 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
       {/* Input Tray */}
       <div className="p-3 bg-[#FFFFFF] border-t border-[#E8DFCF]">
         {errorMsg && (
-          <div className="mb-2 p-2 rounded bg-red-50 text-red-700 text-xs flex items-center justify-between">
+          <div className="mb-2 p-2 rounded bg-red-50 text-red-900 text-xs flex items-center justify-between font-medium border border-red-200">
             <span>{errorMsg}</span>
-            <button onClick={() => setErrorMsg(null)} className="text-red-800 font-bold ml-2">×</button>
+            <button onClick={() => setErrorMsg(null)} className="text-red-900 font-bold ml-2">×</button>
           </div>
         )}
-        <div className="relative rounded-lg border border-[#E8DFCF] focus-within:border-[#14213D] bg-white transition-colors">
+        <div className="relative rounded-lg border border-[#CBD5E1] focus-within:border-[#14213D] bg-white transition-colors">
           <textarea
             ref={textareaRef}
             value={inputText}
@@ -243,10 +243,10 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
             onKeyDown={handleKeyDown}
             placeholder="Share a concern or ask for help…"
             rows={2}
-            className="w-full p-2.5 text-sm bg-transparent resize-none focus:outline-hidden text-[#14213D] placeholder-[#14213D]/40"
+            className="w-full p-2.5 text-sm bg-transparent resize-none focus:outline-hidden text-[#0F172A] placeholder-[#64748B]"
           />
-          <div className="flex items-center justify-between px-2.5 py-1.5 border-t border-[#E8DFCF]/50 bg-[#FAF7F2]/40 rounded-b-lg">
-            <span className="text-[11px] text-[#14213D]/50">
+          <div className="flex items-center justify-between px-2.5 py-1.5 border-t border-[#E8DFCF] bg-[#FAF7F2] rounded-b-lg">
+            <span className="text-[11px] text-[#475569] font-medium">
               Shift + Enter for new line
             </span>
             <div className="flex items-center gap-1.5">
@@ -256,7 +256,7 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
                   setInputText('Here is my project README excerpt for the database schema:');
                   textareaRef.current?.focus();
                 }}
-                className="p-1.5 text-[#14213D]/60 hover:text-[#14213D] rounded-md hover:bg-[#E8DFCF]/50"
+                className="p-1.5 text-[#475569] hover:text-[#0F172A] rounded-md hover:bg-[#E8DFCF]/50"
                 title="Paste project source excerpt"
               >
                 <Paperclip className="w-4 h-4" />
@@ -264,9 +264,9 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
               <button
                 onClick={handleSend}
                 disabled={!inputText.trim() || isLoading}
-                className={`px-3 py-1.5 rounded-md font-semibold text-xs flex items-center gap-1.5 transition-colors ${
+                className={`px-3 py-1.5 rounded-md font-bold text-xs flex items-center gap-1.5 transition-colors ${
                   !inputText.trim() || isLoading
-                    ? 'bg-[#E8DFCF] text-[#14213D]/40 cursor-not-allowed'
+                    ? 'bg-[#E8DFCF] text-[#64748B] cursor-not-allowed'
                     : 'bg-[#FF6B5B] text-[#14213D] hover:bg-[#E05A4A]'
                 }`}
               >

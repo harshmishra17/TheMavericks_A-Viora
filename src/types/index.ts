@@ -83,7 +83,7 @@ export interface InterviewFeedback {
 
 export interface InterviewAttempt {
   id: string;
-  mode: 'Project interview' | 'Role-specific practice' | 'Practise a saved weak area';
+  mode: 'Project interview' | 'Role-specific practice' | 'Practise a saved weak area' | 'Target role questions (5)';
   question: string;
   context: string;
   userAnswer: string;
@@ -122,5 +122,69 @@ export interface AppActivity {
   id: string;
   description: string;
   timestamp: string;
-  type: 'claim' | 'application' | 'interview' | 'reminder' | 'profile';
+  type: 'claim' | 'application' | 'interview' | 'reminder' | 'profile' | 'roadmap';
 }
+
+export interface JobDescriptionAnalysis {
+  id: string;
+  role: string;
+  company: string;
+  rawText: string;
+  extractedSkills: string[];
+  qualifications: string[];
+  responsibilities: string[];
+  keywords: string[];
+  analyzedAt: string;
+}
+
+export interface MatchedSkillItem {
+  skill: string;
+  evidence: string;
+}
+
+export interface MissingSkillItem {
+  skill: string;
+  importance: 'high' | 'medium' | 'low';
+  reason: string;
+}
+
+export interface SkillGapReport {
+  id: string;
+  jobRole: string;
+  company: string;
+  matchedSkills: MatchedSkillItem[];
+  missingSkills: MissingSkillItem[];
+  matchAssessment: string;
+  confidenceAlignment: 'Strong Alignment' | 'Moderate Alignment with Gaps' | 'Foundational Learning Required';
+  analyzedAt: string;
+}
+
+export interface DailyRoadmapTask {
+  id: string;
+  dayNumber: number;
+  title: string;
+  objective: string;
+  tasks: string[];
+  estimatedHours: number;
+  completed: boolean;
+}
+
+export interface PreparationRoadmap {
+  id: string;
+  targetRole: string;
+  company: string;
+  prioritySkills: { skill: string; priority: number; rationale: string }[];
+  dailyPlan: DailyRoadmapTask[];
+  projectImprovements: string[];
+  interviewTopics: string[];
+  generatedAt: string;
+}
+
+export interface JobInterviewQuestion {
+  id: string;
+  question: string;
+  category: 'Technical' | 'Architecture' | 'Behavioral / HR' | 'Project Deep-dive';
+  context: string;
+  expectedKeyPoints: string[];
+}
+

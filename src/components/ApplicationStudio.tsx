@@ -411,20 +411,20 @@ export const ApplicationStudio: React.FC<ApplicationStudioProps> = ({
 
               {/* Source Excerpt */}
               <div className="space-y-1.5">
-                <span className="text-[11px] font-bold text-[#14213D] uppercase tracking-wide block">
+                <span className="text-[11px] font-bold text-[#0F172A] uppercase tracking-wide block">
                   Source Excerpt ({selectedClaim.sourceFilename})
                 </span>
-                <div className="p-3 rounded-md bg-[#FAF7F2] border border-[#E8DFCF] font-mono text-xs text-[#14213D]/80 leading-relaxed whitespace-pre-wrap">
+                <div className="p-3 rounded-lg bg-[#FAF7F2] border border-[#CBD5E1] font-mono text-xs text-[#0F172A] leading-relaxed whitespace-pre-wrap">
                   {selectedClaim.sourceExcerpt}
                 </div>
               </div>
 
               {/* Stated Contribution */}
               <div className="space-y-1.5">
-                <span className="text-[11px] font-bold text-[#14213D] uppercase tracking-wide block">
+                <span className="text-[11px] font-bold text-[#0F172A] uppercase tracking-wide block">
                   Candidate Stated Ownership
                 </span>
-                <p className="text-xs text-[#14213D]/80">
+                <p className="text-xs text-[#1E293B] font-medium">
                   {selectedClaim.statedContribution}
                 </p>
               </div>
@@ -432,18 +432,18 @@ export const ApplicationStudio: React.FC<ApplicationStudioProps> = ({
               {/* Clarification prompt if needed */}
               {selectedClaim.status === 'Needs clarification' ? (
                 <div className="p-3.5 rounded-lg bg-amber-50 border border-amber-200 space-y-3">
-                  <div className="flex items-start gap-2 text-xs text-amber-900 font-medium">
+                  <div className="flex items-start gap-2 text-xs text-amber-950 font-medium">
                     <AlertTriangle className="w-4 h-4 text-amber-700 shrink-0 mt-0.5" />
                     <div>
                       <p className="font-bold">A-viora Clarification Request</p>
-                      <p className="text-[11px] mt-0.5">
+                      <p className="text-[11px] mt-0.5 text-amber-900">
                         {selectedClaim.clarificationQuestion || 'Which specific part of this collaborative project did you personally implement?'}
                       </p>
                     </div>
                   </div>
 
                   <div className="space-y-2">
-                    <label className="block text-[11px] font-bold text-amber-900 uppercase tracking-wide">
+                    <label className="block text-[11px] font-bold text-amber-950 uppercase tracking-wide">
                       Your Precise Answer:
                     </label>
                     <input
@@ -451,10 +451,10 @@ export const ApplicationStudio: React.FC<ApplicationStudioProps> = ({
                       value={studentAnswer}
                       onChange={e => setStudentAnswer(e.target.value)}
                       placeholder="e.g. The database schema and queries."
-                      className="w-full p-2 text-xs rounded border border-amber-300 bg-white text-[#14213D]"
+                      className="w-full p-2.5 text-xs rounded-lg border border-amber-300 bg-white text-[#0F172A] placeholder-[#64748B] focus:border-[#14213D] outline-hidden font-medium"
                     />
 
-                    <label className="block text-[11px] font-bold text-amber-900 uppercase tracking-wide">
+                    <label className="block text-[11px] font-bold text-amber-950 uppercase tracking-wide">
                       Suggested Truthful Replacement:
                     </label>
                     <input
@@ -462,7 +462,7 @@ export const ApplicationStudio: React.FC<ApplicationStudioProps> = ({
                       value={revisedTextCustom}
                       onChange={e => setRevisedTextCustom(e.target.value)}
                       placeholder={selectedClaim.revisedText || 'Designed the database schema and queries for a team-built attendance system.'}
-                      className="w-full p-2 text-xs rounded border border-amber-300 bg-white text-[#14213D]"
+                      className="w-full p-2.5 text-xs rounded-lg border border-amber-300 bg-white text-[#0F172A] placeholder-[#64748B] focus:border-[#14213D] outline-hidden font-medium"
                     />
 
                     <button

@@ -2,22 +2,64 @@
 
 @layer base {
   :root {
+    color-scheme: light !important;
     --font-display: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
     --font-body: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
     --font-mono: 'JetBrains Mono', monospace;
+
+    /* Brand Tokens */
     --color-navy: #14213D;
+    --color-navy-dark: #0A1120;
+    --color-navy-surface: #1E2F52;
     --color-cream: #F4EDE0;
+    --color-cream-surface: #FAF7F2;
     --color-coral: #FF6B5B;
+    --color-coral-hover: #E05A4A;
+
+    /* High-Contrast Neutral Text Tokens (WCAG AA & AAA compliant) */
+    --color-text-primary: #0F172A;   /* Deep charcoal / navy, >14:1 contrast on light */
+    --color-text-secondary: #334155; /* Slate 700, >7:1 contrast on light */
+    --color-text-muted: #475569;     /* Slate 600, >4.8:1 contrast on light (passes 4.5:1) */
+    --color-text-on-dark: #F8FAFC;   /* Crisp off-white on dark navy */
+
+    /* Surface & Border Tokens */
+    --color-border-light: #E2D9C8;
+    --color-border-subtle: #E8DFCF;
+    --color-card-bg: #FFFFFF;
+  }
+
+  html {
+    color-scheme: light !important;
   }
 
   body {
     font-family: var(--font-body);
-    color: #14213D;
+    color: #0F172A !important;
     background-color: #F4EDE0;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 
-  h1, h2, h3, h4, .font-display {
+  /* Universal input, textarea, and select text visibility guarantees */
+  input, textarea, select, option {
+    color-scheme: light !important;
+    color: #0F172A !important;
+    background-color: #FFFFFF !important;
+  }
+
+  input::placeholder, textarea::placeholder {
+    color: #64748B !important;
+    opacity: 1 !important;
+  }
+
+  input:focus, textarea:focus, select:focus {
+    border-color: #14213D !important;
+    outline: none !important;
+  }
+
+  h1, h2, h3, h4, h5, h6, .font-display {
     font-family: var(--font-display);
+    color: #0F172A;
   }
 
   code, pre, .font-mono {
@@ -25,12 +67,18 @@
   }
 }
 
+/* Subtle, refined background grid pattern (very low opacity, non-distracting) */
+.bg-subtle-grid {
+  background-image: radial-gradient(rgba(20, 33, 61, 0.045) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
 /* Subtle vertical line texture for the welcome area */
 .welcome-vertical-texture {
   background-image: repeating-linear-gradient(
     90deg,
-    rgba(20, 33, 61, 0.035) 0px,
-    rgba(20, 33, 61, 0.035) 1px,
+    rgba(244, 237, 224, 0.035) 0px,
+    rgba(244, 237, 224, 0.035) 1px,
     transparent 1px,
     transparent 28px
   );
@@ -40,7 +88,7 @@
 .coral-welcome-glow {
   background: radial-gradient(
     ellipse 60% 50% at 85% 20%,
-    rgba(255, 107, 91, 0.14),
+    rgba(255, 107, 91, 0.16),
     transparent 70%
   );
 }
@@ -54,9 +102,10 @@
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(20, 33, 61, 0.15);
+  background: rgba(20, 33, 61, 0.22);
   border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(20, 33, 61, 0.28);
+  background: rgba(20, 33, 61, 0.38);
 }
+

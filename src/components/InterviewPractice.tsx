@@ -12,15 +12,18 @@ import {
   FolderGit2,
   Briefcase,
   History,
-  Target
+  Target,
+  Sparkles as SparklesIcon,
+  Tag
 } from 'lucide-react';
-import { StudentProfile, ApplicationDraft, InterviewAttempt, SavedWeakArea, InterviewFeedback } from '../types';
+import { StudentProfile, ApplicationDraft, InterviewAttempt, SavedWeakArea, InterviewFeedback, JobInterviewQuestion } from '../types';
 
 interface InterviewPracticeProps {
   profile: StudentProfile;
   application: ApplicationDraft;
   history: InterviewAttempt[];
   weakAreas: SavedWeakArea[];
+  jobQuestions?: JobInterviewQuestion[];
   onSubmitAnswer: (mode: InterviewAttempt['mode'], question: string, context: string, answer: string) => Promise<InterviewAttempt>;
 }
 
@@ -29,9 +32,10 @@ export const InterviewPractice: React.FC<InterviewPracticeProps> = ({
   application,
   history,
   weakAreas,
+  jobQuestions = [],
   onSubmitAnswer
 }) => {
-  const [mode, setMode] = useState<InterviewAttempt['mode']>('Project interview');
+  const [mode, setMode] = useState<InterviewAttempt['mode']>('Target role questions (5)');
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [userAnswer, setUserAnswer] = useState('');
   const [isEvaluating, setIsEvaluating] = useState(false);
@@ -42,46 +46,66 @@ export const InterviewPractice: React.FC<InterviewPracticeProps> = ({
   const projectQuestions = [
     {
       question: 'How did you prevent duplicate attendance records in your college project schema?',
-      context: 'College Attendance System — Database tier & unique constraints'
+      context: 'College Attendance System — Database tier & unique constraints',
+      category: 'Database Deep-dive'
     },
     {
       question: 'Why did you choose this relational database structure instead of an unindexed JSON store?',
-      context: 'Schema design & query performance'
+      context: 'Schema design & query performance',
+      category: 'Architecture'
     },
     {
       question: 'How would your Flask API handle concurrent attendance submissions from 50 classrooms at 9:00 AM?',
-      context: 'Transaction isolation & locking considerations'
+      context: 'Transaction isolation & locking considerations',
+      category: 'Concurrency'
     },
     {
       question: 'Which parts of the attendance system were built by teammates, and how did your database interface with their code?',
-      context: 'Collaborative ownership boundaries & API contracts'
+      context: 'Collaborative ownership boundaries & API contracts',
+      category: 'Ownership & Collaboration'
     }
   ];
 
   const roleQuestions = [
     {
       question: `What specific Python and SQL practices make you a reliable fit for the ${application.role} position at ${application.company}?`,
-      context: `${application.role} — Production readiness`
+      context: `${application.role} — Production readiness`,
+      category: 'Role Alignment'
     },
     {
       question: 'When an index speeds up SELECT queries, what cost does it impose on INSERT and UPDATE operations?',
-      context: 'Database index tradeoffs'
+      context: 'Database index tradeoffs',
+      category: 'Core Computer Science'
     },
     {
       question: 'How do you design a RESTful API endpoint to ensure idempotent behavior upon network timeouts?',
-      context: 'HTTP & API design fundamentals'
+      context: 'HTTP & API design fundamentals',
+      category: 'API Design'
     }
   ];
 
   const weakAreaQuestions = weakAreas.map(w => ({
     question: `Let's drill your saved weak area: "${w.topic}". Can you walk through your solution and how you test it?`,
-    context: w.details
+    context: w.details,
+    category: 'Weak Area Drill'
+  }));
+
+  const aiTargetQuestions = jobQuestions.map(q => ({
+    question: q.question,
+    context: `${application.role} · ${q.context}`,
+    category: q.category,
+    expectedKeyPoints: q.expectedKeyPoints
   }));
 
   // Select questions based on mode
-  let questionsList = projectQuestions;
-  if (mode === 'Role-specific practice') questionsList = roleQuestions;
-  if (mode === 'Practise a saved weak area') {
+  let questionsList = aiTargetQuestions.length > 0 ? aiTargetQuestions : projectQuestions;
+  if (mode === 'Target role questions (5)') {
+    questionsList = aiTargetQuestions.length > 0 ? aiTargetQuestions : projectQuestions;
+  } else if (mode === 'Project interview') {
+    questionsList = projectQuestions;
+  } else if (mode === 'Role-specific practice') {
+    questionsList = roleQuestions;
+  } else if (mode === 'Practise a saved weak area') {
     questionsList = weakAreaQuestions.length > 0 ? weakAreaQuestions : projectQuestions;
   }
 
@@ -136,21 +160,37 @@ export const InterviewPractice: React.FC<InterviewPracticeProps> = ({
         </div>
 
         {/* Mode Selector Tabs */}
-        <div className="flex items-center gap-1 p-1 bg-[#FAF7F2] rounded-lg border border-[#E8DFCF] overflow-x-auto">
+        <div className="flex items-center gap-1.5 p-1.5 bg-[#FAF7F2] rounded-xl border border-[#E8DFCF] overflow-x-auto">
+          <button
+            onClick={() => {
+              setMode('Target role questions (5)');
+              setCurrentQuestionIndex(0);
+              setLatestAttempt(null);
+            }}
+            className={`px-3.5 py-2 text-xs font-bold rounded-lg transition-colors whitespace-nowrap flex items-center gap-1.5 ${
+              mode === 'Target role questions (5)'
+                ? 'bg-[#14213D] text-[#F4EDE0] shadow-sm'
+                : 'text-[#334155] hover:text-[#0F172A] hover:bg-white/80'
+            }`}
+          >
+            <SparklesIcon className="w-3.5 h-3.5 text-[#FF6B5B]" />
+            <span>Target Role Questions ({jobQuestions.length || 5})</span>
+          </button>
+
           <button
             onClick={() => {
               setMode('Project interview');
               setCurrentQuestionIndex(0);
               setLatestAttempt(null);
             }}
-            className={`px-3.5 py-1.5 text-xs font-semibold rounded-md transition-colors whitespace-nowrap flex items-center gap-1.5 ${
+            className={`px-3.5 py-2 text-xs font-bold rounded-lg transition-colors whitespace-nowrap flex items-center gap-1.5 ${
               mode === 'Project interview'
-                ? 'bg-white text-[#14213D] shadow-xs'
-                : 'text-[#14213D]/70 hover:text-[#14213D]'
+                ? 'bg-[#14213D] text-[#F4EDE0] shadow-sm'
+                : 'text-[#334155] hover:text-[#0F172A] hover:bg-white/80'
             }`}
           >
             <FolderGit2 className="w-3.5 h-3.5 text-[#FF6B5B]" />
-            <span>1. Project Interview</span>
+            <span>Project Deep-Dive</span>
           </button>
 
           <button
@@ -159,14 +199,14 @@ export const InterviewPractice: React.FC<InterviewPracticeProps> = ({
               setCurrentQuestionIndex(0);
               setLatestAttempt(null);
             }}
-            className={`px-3.5 py-1.5 text-xs font-semibold rounded-md transition-colors whitespace-nowrap flex items-center gap-1.5 ${
+            className={`px-3.5 py-2 text-xs font-bold rounded-lg transition-colors whitespace-nowrap flex items-center gap-1.5 ${
               mode === 'Role-specific practice'
-                ? 'bg-white text-[#14213D] shadow-xs'
-                : 'text-[#14213D]/70 hover:text-[#14213D]'
+                ? 'bg-[#14213D] text-[#F4EDE0] shadow-sm'
+                : 'text-[#334155] hover:text-[#0F172A] hover:bg-white/80'
             }`}
           >
             <Briefcase className="w-3.5 h-3.5 text-[#FF6B5B]" />
-            <span>2. Role-Specific Practice</span>
+            <span>Role Fundamentals</span>
           </button>
 
           <button
@@ -175,20 +215,20 @@ export const InterviewPractice: React.FC<InterviewPracticeProps> = ({
               setCurrentQuestionIndex(0);
               setLatestAttempt(null);
             }}
-            className={`px-3.5 py-1.5 text-xs font-semibold rounded-md transition-colors whitespace-nowrap flex items-center gap-1.5 ${
+            className={`px-3.5 py-2 text-xs font-bold rounded-lg transition-colors whitespace-nowrap flex items-center gap-1.5 ${
               mode === 'Practise a saved weak area'
-                ? 'bg-white text-[#14213D] shadow-xs'
-                : 'text-[#14213D]/70 hover:text-[#14213D]'
+                ? 'bg-[#14213D] text-[#F4EDE0] shadow-sm'
+                : 'text-[#334155] hover:text-[#0F172A] hover:bg-white/80'
             }`}
           >
             <Target className="w-3.5 h-3.5 text-[#FF6B5B]" />
-            <span>3. Saved Weak Areas ({weakAreas.length})</span>
+            <span>Saved Weak Areas ({weakAreas.length})</span>
           </button>
         </div>
       </div>
 
       {errorNotice && (
-        <div className="p-3 bg-red-50 text-red-800 rounded-lg text-xs border border-red-200">
+        <div className="p-3 bg-red-50 text-red-900 rounded-lg text-xs border border-red-200 font-medium">
           {errorNotice}
         </div>
       )}
@@ -198,12 +238,12 @@ export const InterviewPractice: React.FC<InterviewPracticeProps> = ({
         {/* Left Column: Active Question & Input Form (7 cols) */}
         <div className="lg:col-span-7 bg-[#FFFFFF] rounded-xl border border-[#E8DFCF] p-6 shadow-xs space-y-6">
           <div className="flex items-center justify-between border-b border-[#E8DFCF] pb-3">
-            <span className="text-xs font-mono font-medium text-[#14213D]/60 uppercase">
-              Question {currentQuestionIndex + 1} of {questionsList.length}
+            <span className="text-xs font-mono font-bold text-[#475569] uppercase">
+              Question {(currentQuestionIndex % questionsList.length) + 1} of {questionsList.length}
             </span>
             <button
               onClick={handleNextQuestion}
-              className="text-xs font-semibold text-[#14213D] hover:text-[#FF6B5B] flex items-center gap-1"
+              className="text-xs font-bold text-[#14213D] hover:text-[#FF6B5B] flex items-center gap-1"
             >
               <span>Next question</span>
               <ArrowRight className="w-3.5 h-3.5" />
@@ -211,19 +251,42 @@ export const InterviewPractice: React.FC<InterviewPracticeProps> = ({
           </div>
 
           {/* Active Question Box */}
-          <div className="p-4 rounded-xl bg-[#FAF7F2] border border-[#E8DFCF] space-y-2">
-            <div className="text-[11px] font-mono text-[#14213D]/60 uppercase tracking-wide">
-              Context: {activeQuestionItem.context}
+          <div className="p-4 sm:p-5 rounded-xl bg-[#FAF7F2] border border-[#E8DFCF] space-y-3">
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <span className="text-[11px] font-mono font-semibold text-[#475569] uppercase tracking-wide">
+                Context: {activeQuestionItem.context}
+              </span>
+              {(activeQuestionItem as any).category && (
+                <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-[#14213D]/10 text-[#14213D]">
+                  {(activeQuestionItem as any).category}
+                </span>
+              )}
             </div>
-            <h2 className="text-base sm:text-lg font-bold text-[#14213D] leading-snug">
+            <h2 className="text-base sm:text-lg font-bold text-[#0F172A] leading-snug">
               {activeQuestionItem.question}
             </h2>
+
+            {(activeQuestionItem as any).expectedKeyPoints && (activeQuestionItem as any).expectedKeyPoints.length > 0 && (
+              <div className="pt-2 border-t border-[#E8DFCF]/70">
+                <div className="text-[11px] font-bold text-[#334155] uppercase tracking-wider mb-1 flex items-center gap-1">
+                  <Lightbulb className="w-3 h-3 text-[#FF6B5B]" />
+                  <span>Key topics interviewers look for:</span>
+                </div>
+                <div className="flex flex-wrap gap-1.5">
+                  {(activeQuestionItem as any).expectedKeyPoints.map((pt: string, pIdx: number) => (
+                    <span key={pIdx} className="text-[11px] font-medium text-[#1E293B] bg-white px-2 py-0.5 rounded border border-[#E8DFCF]">
+                      • {pt}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Answer Input */}
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block text-xs font-bold text-[#14213D] uppercase tracking-wider mb-1.5">
+              <label className="block text-xs font-bold text-[#0F172A] uppercase tracking-wider mb-1.5">
                 Your Answer (Type as you would speak in an interview)
               </label>
               <textarea
@@ -232,21 +295,21 @@ export const InterviewPractice: React.FC<InterviewPracticeProps> = ({
                 rows={6}
                 disabled={isEvaluating}
                 placeholder="Explain the technical mechanism, the tradeoff you chose, and how you verified it..."
-                className="w-full p-3.5 rounded-lg border border-[#E8DFCF] focus:border-[#14213D] text-xs sm:text-sm text-[#14213D] leading-relaxed bg-white outline-hidden font-mono resize-y"
+                className="w-full p-3.5 rounded-lg border border-[#CBD5E1] focus:border-[#14213D] text-xs sm:text-sm text-[#0F172A] placeholder-[#64748B] leading-relaxed bg-white outline-hidden font-mono resize-y"
                 required
               />
             </div>
 
             <div className="flex items-center justify-between pt-2">
-              <span className="text-[11px] text-[#14213D]/50">
+              <span className="text-[11px] text-[#475569] font-medium">
                 Be specific: mention database constraints, HTTP codes, or test scripts.
               </span>
               <button
                 type="submit"
                 disabled={!userAnswer.trim() || isEvaluating}
-                className={`px-5 py-2 rounded-lg font-bold text-xs uppercase tracking-wider transition-colors flex items-center gap-2 shadow-xs ${
+                className={`px-5 py-2.5 rounded-lg font-extrabold text-xs uppercase tracking-wider transition-colors flex items-center gap-2 shadow-xs ${
                   !userAnswer.trim() || isEvaluating
-                    ? 'bg-[#E8DFCF] text-[#14213D]/40 cursor-not-allowed'
+                    ? 'bg-[#E8DFCF] text-[#64748B] cursor-not-allowed'
                     : 'bg-[#FF6B5B] hover:bg-[#E05A4A] text-[#14213D]'
                 }`}
               >
@@ -291,11 +354,11 @@ export const InterviewPractice: React.FC<InterviewPracticeProps> = ({
 
                 {/* 3. Practical suggestion */}
                 <div className="p-3.5 rounded-lg bg-[#FAF7F2] border border-[#E8DFCF] text-xs space-y-1">
-                  <div className="flex items-center gap-1.5 font-bold text-[#14213D]">
+                  <div className="flex items-center gap-1.5 font-bold text-[#0F172A]">
                     <Lightbulb className="w-3.5 h-3.5 text-[#FF6B5B] shrink-0" />
                     <span>Practical phrasing suggestion</span>
                   </div>
-                  <p className="text-[#14213D]/90 leading-relaxed pl-5 font-mono">
+                  <p className="text-[#0F172A] leading-relaxed pl-5 font-mono">
                     {latestAttempt.feedback.practicalSuggestion}
                   </p>
                 </div>
@@ -306,7 +369,7 @@ export const InterviewPractice: React.FC<InterviewPracticeProps> = ({
                     <HelpCircle className="w-3.5 h-3.5 shrink-0" />
                     <span>Useful follow-up question to prepare</span>
                   </div>
-                  <p className="text-[#F4EDE0]/90 leading-relaxed pl-5">
+                  <p className="text-[#F4EDE0] leading-relaxed pl-5">
                     "{latestAttempt.feedback.followUpQuestion}"
                   </p>
                 </div>
@@ -315,7 +378,7 @@ export const InterviewPractice: React.FC<InterviewPracticeProps> = ({
               <div className="pt-2 flex justify-end">
                 <button
                   onClick={handleNextQuestion}
-                  className="px-4 py-2 rounded-lg bg-[#14213D] text-white hover:bg-[#1E2F52] text-xs font-semibold flex items-center gap-1.5 transition-colors"
+                  className="px-4 py-2 rounded-lg bg-[#14213D] text-white hover:bg-[#1E2F52] text-xs font-bold flex items-center gap-1.5 transition-colors"
                 >
                   <span>Practise Next Question</span>
                   <ArrowRight className="w-3.5 h-3.5" />
@@ -332,17 +395,17 @@ export const InterviewPractice: React.FC<InterviewPracticeProps> = ({
             <div className="flex items-center justify-between border-b border-[#E8DFCF] pb-2.5">
               <div className="flex items-center gap-2">
                 <Target className="w-4 h-4 text-[#FF6B5B]" />
-                <h3 className="font-display font-bold text-xs uppercase tracking-wider text-[#14213D]">
+                <h3 className="font-display font-bold text-xs uppercase tracking-wider text-[#0F172A]">
                   Identified Weak Areas
                 </h3>
               </div>
-              <span className="text-[11px] font-mono text-[#14213D]/60">
+              <span className="text-[11px] font-mono font-medium text-[#475569]">
                 {weakAreas.length} Saved
               </span>
             </div>
 
             {weakAreas.length === 0 ? (
-              <p className="text-xs text-[#14213D]/60 py-2">
+              <p className="text-xs text-[#475569] py-2">
                 No weak areas identified yet. They will appear here automatically when feedback spots gaps.
               </p>
             ) : (
@@ -352,13 +415,13 @@ export const InterviewPractice: React.FC<InterviewPracticeProps> = ({
                     key={wa.id}
                     className="p-3 rounded-lg bg-[#FAF7F2] border border-[#E8DFCF] space-y-1 text-xs"
                   >
-                    <div className="flex items-center justify-between font-bold text-[#14213D]">
+                    <div className="flex items-center justify-between font-bold text-[#0F172A]">
                       <span>{wa.topic}</span>
-                      <span className="text-[10px] font-mono text-[#14213D]/50 font-normal">
+                      <span className="text-[10px] font-mono text-[#475569] font-normal">
                         Practiced {wa.practicedCount}x
                       </span>
                     </div>
-                    <p className="text-[11px] text-[#14213D]/70">{wa.details}</p>
+                    <p className="text-[11px] text-[#334155]">{wa.details}</p>
                   </div>
                 ))}
               </div>
@@ -370,11 +433,11 @@ export const InterviewPractice: React.FC<InterviewPracticeProps> = ({
             <div className="flex items-center justify-between border-b border-[#E8DFCF] pb-2.5">
               <div className="flex items-center gap-2">
                 <History className="w-4 h-4 text-[#FF6B5B]" />
-                <h3 className="font-display font-bold text-xs uppercase tracking-wider text-[#14213D]">
+                <h3 className="font-display font-bold text-xs uppercase tracking-wider text-[#0F172A]">
                   Past Practice Attempts
                 </h3>
               </div>
-              <span className="text-[11px] font-mono text-[#14213D]/60">
+              <span className="text-[11px] font-mono font-medium text-[#475569]">
                 {history.length} logged
               </span>
             </div>
@@ -384,16 +447,16 @@ export const InterviewPractice: React.FC<InterviewPracticeProps> = ({
                 <div
                   key={att.id}
                   onClick={() => setLatestAttempt(att)}
-                  className="p-3 rounded-lg bg-[#FAF7F2] border border-[#E8DFCF] hover:border-[#14213D]/40 transition-colors cursor-pointer text-xs space-y-1"
+                  className="p-3 rounded-lg bg-[#FAF7F2] border border-[#E8DFCF] hover:border-[#14213D] transition-colors cursor-pointer text-xs space-y-1"
                 >
-                  <div className="flex items-center justify-between text-[10px] font-mono text-[#14213D]/50">
+                  <div className="flex items-center justify-between text-[10px] font-mono text-[#475569]">
                     <span>{att.mode}</span>
                     <span>{new Date(att.timestamp).toLocaleDateString()}</span>
                   </div>
-                  <div className="font-semibold text-[#14213D] line-clamp-1">
+                  <div className="font-bold text-[#0F172A] line-clamp-1">
                     {att.question}
                   </div>
-                  <div className="text-[11px] text-emerald-800 font-medium line-clamp-1">
+                  <div className="text-[11px] text-emerald-900 font-semibold line-clamp-1">
                     Clear: {att.feedback.whatWasClear}
                   </div>
                 </div>

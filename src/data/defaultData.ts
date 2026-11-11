@@ -284,3 +284,220 @@ export const INITIAL_REMINDERS: ReminderItem[] = [
     createdAt: new Date(Date.now() - 1000 * 60 * 60 * 12).toISOString()
   }
 ];
+
+export const INITIAL_JOB_ANALYSIS = {
+  id: 'analysis-job-1',
+  role: 'Backend Engineering Intern',
+  company: 'AcuityLogix Systems (Fictional)',
+  rawText: 'Join our data platform team building scalable microservices and database query optimization pipelines for internal analytics. Requirements: Python, SQL, REST APIs, Docker.',
+  extractedSkills: ['Python', 'SQL', 'REST APIs', 'Docker', 'Relational Databases', 'Query Optimization'],
+  qualifications: [
+    'Enrolled in Computer Science or related degree',
+    'Demonstrated experience with relational databases and query optimization',
+    'Hands-on experience building backend APIs in Python',
+    'Familiarity with containerization (Docker) is a plus'
+  ],
+  responsibilities: [
+    'Build and maintain microservice endpoints in Python',
+    'Optimize slow SQL queries and design composite indices',
+    'Collaborate with distributed team members using Git',
+    'Participate in code reviews and test validation'
+  ],
+  keywords: ['Python', 'SQL', 'REST APIs', 'Docker', 'Microservices', 'Query Optimization', 'Indexes'],
+  analyzedAt: new Date().toISOString()
+};
+
+export const INITIAL_SKILL_GAP_REPORT = {
+  id: 'gap-job-1',
+  jobRole: 'Backend Engineering Intern',
+  company: 'AcuityLogix Systems (Fictional)',
+  matchedSkills: [
+    { skill: 'Python', evidence: 'Engineered Python Flask REST endpoints for recording daily attendance and exporting CSV summaries.' },
+    { skill: 'SQL & Relational Schema', evidence: 'Designed relational schema with unique composite constraints and indexed queries in schema.sql.' },
+    { skill: 'REST APIs', evidence: 'Built Flask API routes for CSV exports and session verification in app.py.' },
+    { skill: 'Git & Collaboration', evidence: '4-person team attendance repo with modular architecture and Git branching.' }
+  ],
+  missingSkills: [
+    { skill: 'Docker Containerization', importance: 'high' as const, reason: 'Requested for microservices deployment and local test environments; not currently demonstrated in student repo.' },
+    { skill: 'Microservices Communication', importance: 'medium' as const, reason: 'Attendance system is a monolithic Flask app; AcuityLogix builds distributed service meshes.' },
+    { skill: 'Production Load Benchmarking', importance: 'medium' as const, reason: 'Attendance queries tested with 350+ mock students; needs demonstration under high concurrency.' }
+  ],
+  matchAssessment: 'Strong foundational match on core backend disciplines (Python, SQL modeling, REST APIs). Docker and containerized deployment represent the primary technical growth area to address in your application narrative and preparation.',
+  confidenceAlignment: 'Strong Alignment' as const,
+  analyzedAt: new Date().toISOString()
+};
+
+export const INITIAL_ROADMAP = {
+  id: 'roadmap-job-1',
+  targetRole: 'Backend Engineering Intern',
+  company: 'AcuityLogix Systems (Fictional)',
+  prioritySkills: [
+    { skill: 'Docker & Containerization', priority: 1, rationale: 'Docker is explicitly requested in AcuityLogix requirements but unverified in your repo.' },
+    { skill: 'SQL Execution Plans & EXPLAIN ANALYZE', priority: 2, rationale: 'Crucial for passing AcuityLogix query tuning and indexing technical screen.' },
+    { skill: 'API Concurrency & Idempotency', priority: 3, rationale: 'Essential for discussing real-world scale and transaction isolation.' }
+  ],
+  dailyPlan: [
+    {
+      id: 'day-1',
+      dayNumber: 1,
+      title: 'Dockerizing the Attendance Backend',
+      objective: 'Write a clean multi-stage Dockerfile for your Flask attendance app and run it locally with docker-compose.',
+      tasks: [
+        'Write Dockerfile for Python Flask backend with lightweight python:3.11-slim base',
+        'Create docker-compose.yml mounting PostgreSQL and the Flask service',
+        'Verify database migrations execute on container start'
+      ],
+      estimatedHours: 2,
+      completed: true
+    },
+    {
+      id: 'day-2',
+      dayNumber: 2,
+      title: 'Deep-Dive: SQL EXPLAIN & Indexing Mechanics',
+      objective: 'Master B-tree indexing trade-offs and query execution plans for candidate interviews.',
+      tasks: [
+        'Run EXPLAIN ANALYZE on attendance query with and without composite index',
+        'Document performance delta in README (retrieval time under 50ms)',
+        'Draft crisp interview phrasing for index overhead on write operations'
+      ],
+      estimatedHours: 2.5,
+      completed: true
+    },
+    {
+      id: 'day-3',
+      dayNumber: 3,
+      title: 'HTTP Status Codes & Conflict Handling',
+      objective: 'Bridge database integrity exceptions to clean REST responses (409 Conflict instead of 500 Internal Error).',
+      tasks: [
+        'Implement Flask exception handler for UniqueViolation integrity errors',
+        'Return structured JSON error payload with error code and user-friendly message',
+        'Write unit test asserting 409 status on duplicate student attendance submission'
+      ],
+      estimatedHours: 2,
+      completed: false
+    },
+    {
+      id: 'day-4',
+      dayNumber: 4,
+      title: 'API Concurrency & Connection Pooling',
+      objective: 'Prepare answers for multi-user classroom submission scenarios at 9:00 AM.',
+      tasks: [
+        'Review SQLAlchemy / psycopg2 connection pool sizing and timeout configurations',
+        'Understand database row-level locking vs table locking under concurrent inserts',
+        'Practise explaining transaction isolation levels (Read Committed vs Serializable)'
+      ],
+      estimatedHours: 2.5,
+      completed: false
+    },
+    {
+      id: 'day-5',
+      dayNumber: 5,
+      title: 'Project Evidence & README Strengthening',
+      objective: 'Clarify 4-person collaborative project boundaries in repository documentation.',
+      tasks: [
+        'Update GitHub repository README with an explicit architecture diagram showing your database tier',
+        'Include benchmark stats and sample CSV export payloads in documentation',
+        'Remove ambiguous "built everything" claims and anchor to authored files'
+      ],
+      estimatedHours: 1.5,
+      completed: false
+    },
+    {
+      id: 'day-6',
+      dayNumber: 6,
+      title: 'Job-Specific Technical Mock Interview',
+      objective: 'Drill 5 AcuityLogix technical interview questions under timed simulated pressure.',
+      tasks: [
+        'Answer questions on composite indices, Docker container lifecycle, and REST idempotency',
+        'Review AI feedback on technical precision and refine phrasing',
+        'Save any identified weak areas to the review list'
+      ],
+      estimatedHours: 2,
+      completed: false
+    },
+    {
+      id: 'day-7',
+      dayNumber: 7,
+      title: 'Behavioral Prep & Final Application Polish',
+      objective: 'Articulate collaborative teamwork, code reviews, and honest handling of knowledge gaps.',
+      tasks: [
+        'Practise the STAR method response for handling team disagreements on schema design',
+        'Generate and download finalized PDF resume and tailored cover note',
+        'Submit simulated application and secure dispatch verification receipt'
+      ],
+      estimatedHours: 1.5,
+      completed: false
+    }
+  ],
+  projectImprovements: [
+    'Add a working Dockerfile and docker-compose.yml to the attendance repository root.',
+    'Write a pytest test suite covering the 409 Conflict duplicate attendance error handler.',
+    'Include benchmark script (`benchmark_queries.py`) demonstrating indexed vs unindexed query speeds.'
+  ],
+  interviewTopics: [
+    'Composite indexing vs single-column indexing in relational databases',
+    'Docker containerization best practices and multi-stage builds',
+    'HTTP idempotency (PUT vs POST) and handling duplicate requests',
+    'Communicating project ownership boundaries honestly in collaborative software'
+  ],
+  generatedAt: new Date().toISOString()
+};
+
+export const INITIAL_JOB_QUESTIONS = [
+  {
+    id: 'jq-1',
+    question: 'In your attendance project, you configured a composite unique constraint on (student_id, session_date). How would that affect performance if we scale to 500,000 records, and what does the B-Tree index structure look like internally?',
+    category: 'Technical' as const,
+    context: 'Database Tier & Index Mechanics (AcuityLogix Core Requirement)',
+    expectedKeyPoints: [
+      'B-tree index depth increases logarithmically O(log N)',
+      'Composite index evaluates leftmost column (student_id) first',
+      'Index imposes write amplification on INSERTs but provides O(log N) lookup'
+    ]
+  },
+  {
+    id: 'jq-2',
+    question: 'AcuityLogix relies heavily on containerized microservices. How would you containerize your Flask and database application using Docker, and how do you ensure the database is ready before the API accepts traffic?',
+    category: 'Architecture' as const,
+    context: 'Docker & Containerization (Growth Gap Requirement)',
+    expectedKeyPoints: [
+      'Multi-stage Dockerfile for lightweight image size',
+      'Healthcheck and depends_on with condition: service_healthy in docker-compose',
+      'Environment variable separation for credentials'
+    ]
+  },
+  {
+    id: 'jq-3',
+    question: 'If two faculty members submit attendance for the same classroom simultaneously at 9:00 AM, how does your backend prevent duplicate database records without returning a 500 Internal Server Error?',
+    category: 'Technical' as const,
+    context: 'Concurrency, Transactions & REST Error Handling',
+    expectedKeyPoints: [
+      'Database unique constraint catches concurrent duplicates atomically',
+      'Flask catches IntegrityError / UniqueViolation exception',
+      'Translates exception to HTTP 409 Conflict with descriptive message'
+    ]
+  },
+  {
+    id: 'jq-4',
+    question: 'Your college attendance system was built by a team of 4. Tell me about a time you and a teammate disagreed on a technical choice—such as database design vs frontend API contracts—and how you resolved it.',
+    category: 'Behavioral / HR' as const,
+    context: 'Team Collaboration & Technical Communication (STAR Method)',
+    expectedKeyPoints: [
+      'Clear definition of team roles and shared API contract (OpenAPI/JSON schema)',
+      'Constructive debate backed by testing or prototyping',
+      'Commitment to team delivery over personal ego'
+    ]
+  },
+  {
+    id: 'jq-5',
+    question: 'Why AcuityLogix Systems, and how does this internship align with what you personally want to build in your backend engineering career?',
+    category: 'Behavioral / HR' as const,
+    context: 'Motivation & Role Fit',
+    expectedKeyPoints: [
+      'Passion for scalable data platforms and query tuning',
+      'Desire to master production containerization (Docker) alongside senior engineers',
+      'Commitment to honest, verifiable engineering contributions'
+    ]
+  }
+];
+

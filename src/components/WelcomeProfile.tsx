@@ -58,22 +58,37 @@ export const WelcomeProfile: React.FC<WelcomeProfileProps> = ({
     setIsSaved(false);
   };
 
+  const [uploadStep, setUploadStep] = useState<string>('');
+
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
+    // Validate file size (10MB limit)
+    const MAX_SIZE = 10 * 1024 * 1024;
+    if (file.size > MAX_SIZE) {
+      setFileParseNotice(`Upload rejected: "${file.name}" is ${(file.size / (1024 * 1024)).toFixed(1)}MB. Maximum supported file size is 10MB.`);
+      e.target.value = '';
+      return;
+    }
+
     setIsParsingFile(true);
+    setUploadStep('Validating file format...');
     setFileParseNotice(null);
 
     try {
+      setUploadStep(`Extracting text from ${file.name}...`);
       const result = await parseResumeFile(file);
+      setUploadStep('Analyzing parsed sections...');
+
       setFormData(prev => ({
         ...prev,
         rawResumeText: result.text,
         projectReadme: prev.projectReadme || (result.text.length > 500 ? result.text.slice(0, 500) : result.text)
       }));
+
       setFileParseNotice(
-        `Successfully extracted text from ${result.fileType.toUpperCase()} file "${file.name}". Please review and verify the extracted content below.`
+        `Successfully extracted text from ${result.fileType.toUpperCase()} file "${file.name}" (${(file.size / 1024).toFixed(0)} KB). Review the extracted content below.`
       );
     } catch (err: any) {
       setFileParseNotice(
@@ -82,6 +97,7 @@ export const WelcomeProfile: React.FC<WelcomeProfileProps> = ({
       setActiveTab('rawResume');
     } finally {
       setIsParsingFile(false);
+      setUploadStep('');
       e.target.value = '';
     }
   };
@@ -98,15 +114,15 @@ export const WelcomeProfile: React.FC<WelcomeProfileProps> = ({
   return (
     <div className="max-w-5xl mx-auto space-y-8 pb-12">
       {/* Welcome Banner with subtle vertical texture and soft coral glow */}
-      <section className="relative overflow-hidden rounded-2xl bg-[#14213D] text-[#F4EDE0] p-8 md:p-10 shadow-sm border border-[#1E2F52] welcome-vertical-texture coral-welcome-glow">
+      <section className="relative overflow-hidden rounded-2xl bg-[#14213D] text-[#F8FAFC] p-8 md:p-10 shadow-sm border border-[#1E2F52] welcome-vertical-texture coral-welcome-glow">
         <div className="relative z-10 max-w-2xl space-y-3">
-          <div className="inline-flex items-center gap-2 text-xs font-semibold text-[#FF6B5B] uppercase tracking-wider font-mono">
+          <div className="inline-flex items-center gap-2 text-xs font-bold text-[#FF6B5B] uppercase tracking-wider font-mono">
             <span>A-viora Placement Assistant</span>
           </div>
-          <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight font-display text-white text-balance">
+          <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight font-display text-[#F8FAFC] text-balance">
             Your next opportunity starts with your work.
           </h1>
-          <p className="text-sm sm:text-base text-[#F4EDE0]/80 leading-relaxed max-w-xl">
+          <p className="text-sm sm:text-base text-[#F4EDE0] leading-relaxed max-w-xl font-medium">
             A-viora builds your placement story on honest, verified code contributions—not generic buzzwords or invented credentials. Review your real project facts below or get started with our sample student.
           </p>
 
@@ -118,7 +134,7 @@ export const WelcomeProfile: React.FC<WelcomeProfileProps> = ({
                 setFormData(JSON.parse(JSON.stringify(SAMPLE_STUDENT)));
                 setIsSaved(true);
               }}
-              className="px-4 py-2 rounded-lg bg-[#FF6B5B] hover:bg-[#E05A4A] text-[#14213D] font-bold text-xs uppercase tracking-wide transition-colors flex items-center gap-2 shadow-xs"
+              className="px-4 py-2 rounded-lg bg-[#FF6B5B] hover:bg-[#E05A4A] text-[#14213D] font-extrabold text-xs uppercase tracking-wide transition-colors flex items-center gap-2 shadow-xs"
             >
               <UserCheck className="w-4 h-4" />
               <span>Try sample student (Riya Sharma)</span>
@@ -127,7 +143,7 @@ export const WelcomeProfile: React.FC<WelcomeProfileProps> = ({
             <button
               type="button"
               onClick={() => setActiveTab('rawResume')}
-              className="px-4 py-2 rounded-lg bg-[#1E2F52] hover:bg-[#1E2F52]/80 text-[#F4EDE0] text-xs font-semibold transition-colors flex items-center gap-2 border border-[#F4EDE0]/20"
+              className="px-4 py-2 rounded-lg bg-[#1E2F52] hover:bg-[#1E2F52]/80 text-[#F8FAFC] text-xs font-bold transition-colors flex items-center gap-2 border border-[#E2D9C8]/30 shadow-xs"
             >
               <FileText className="w-4 h-4 text-[#FF6B5B]" />
               <span>Add my resume / text</span>
@@ -136,10 +152,10 @@ export const WelcomeProfile: React.FC<WelcomeProfileProps> = ({
             <button
               type="button"
               onClick={onContinue}
-              className="px-4 py-2 rounded-lg bg-transparent hover:bg-white/10 text-white text-xs font-semibold transition-colors flex items-center gap-1.5 ml-auto"
+              className="px-4 py-2 rounded-lg bg-[#FAF7F2] hover:bg-white text-[#0F172A] text-xs font-bold transition-colors flex items-center gap-1.5 ml-auto shadow-xs"
             >
               <span>Go to Overview</span>
-              <ArrowRight className="w-4 h-4" />
+              <ArrowRight className="w-4 h-4 text-[#FF6B5B]" />
             </button>
           </div>
         </div>
@@ -395,26 +411,36 @@ export const WelcomeProfile: React.FC<WelcomeProfileProps> = ({
             <div className="space-y-6">
               {/* File upload control */}
               <div>
-                <label className="block text-xs font-bold text-[#14213D] uppercase tracking-wider mb-1.5">
-                  Resume File Upload (.pdf, .docx, .txt, .md)
+                <label className="block text-xs font-bold text-[#0F172A] uppercase tracking-wider mb-2">
+                  Resume File Upload (.pdf, .docx, .txt, .md · Max 10MB)
                 </label>
-                <div className="border-2 border-dashed border-[#E8DFCF] rounded-xl p-6 text-center hover:border-[#14213D] transition-colors bg-[#FAF7F2]">
+                <div className="border-2 border-dashed border-[#CBD5E1] hover:border-[#14213D] rounded-xl p-6 sm:p-8 text-center transition-colors bg-[#FAF7F2] shadow-xs">
                   {isParsingFile ? (
-                    <div className="py-2 flex flex-col items-center justify-center space-y-2">
-                      <Loader2 className="w-8 h-8 text-[#FF6B5B] animate-spin" />
-                      <p className="text-xs font-medium text-[#14213D]">
-                        Extracting text from resume file...
-                      </p>
+                    <div className="py-4 flex flex-col items-center justify-center space-y-3">
+                      <Loader2 className="w-9 h-9 text-[#FF6B5B] animate-spin" />
+                      <div className="space-y-1">
+                        <p className="text-sm font-bold text-[#0F172A]">
+                          Extracting text from resume file...
+                        </p>
+                        <p className="text-xs text-[#334155] font-mono">
+                          {uploadStep || 'Reading document streams...'}
+                        </p>
+                      </div>
                     </div>
                   ) : (
                     <>
-                      <Upload className="w-8 h-8 mx-auto text-[#14213D]/40 mb-2" />
-                      <p className="text-xs text-[#14213D]/70 mb-2">
-                        Browse your resume in PDF (.pdf), Word (.docx, .doc), or text format (.txt, .md)
+                      <div className="w-12 h-12 mx-auto rounded-xl bg-white border border-[#E2D9C8] flex items-center justify-center mb-3 shadow-xs">
+                        <Upload className="w-6 h-6 text-[#14213D]" />
+                      </div>
+                      <p className="text-sm font-bold text-[#0F172A] mb-1">
+                        Upload your resume in PDF or Word format
                       </p>
-                      <label className="cursor-pointer inline-flex items-center gap-2 px-3.5 py-2 rounded-md bg-[#14213D] text-white text-xs font-semibold hover:bg-[#1E2F52] transition-colors">
-                        <Upload className="w-3.5 h-3.5 text-[#FF6B5B]" />
-                        <span>Browse Resume (PDF, Word, Text)</span>
+                      <p className="text-xs text-[#334155] font-medium mb-4 max-w-md mx-auto">
+                        Supports PDF (.pdf), Microsoft Word (.docx, .doc), and plain text (.txt, .md) up to 10MB.
+                      </p>
+                      <label className="cursor-pointer inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-[#14213D] hover:bg-[#1E2F52] text-[#F8FAFC] text-xs font-bold transition-all shadow-xs active:scale-[0.98]">
+                        <Upload className="w-4 h-4 text-[#FF6B5B]" />
+                        <span>Browse Resume File</span>
                         <input
                           type="file"
                           accept=".pdf,.docx,.doc,.txt,.md,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/msword,text/plain,text/markdown"
@@ -422,8 +448,8 @@ export const WelcomeProfile: React.FC<WelcomeProfileProps> = ({
                           className="hidden"
                         />
                       </label>
-                      <p className="text-[11px] text-[#14213D]/50 mt-2">
-                        PDF and Word resumes are parsed directly into plain text. You can also paste your resume text below.
+                      <p className="text-xs text-[#475569] font-medium mt-3">
+                        Extracted text is processed locally and populated into the editable review box below.
                       </p>
                     </>
                   )}
@@ -431,8 +457,8 @@ export const WelcomeProfile: React.FC<WelcomeProfileProps> = ({
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-[#14213D] uppercase tracking-wider mb-1.5">
-                  Or Paste Resume Text Below
+                <label className="block text-xs font-bold text-[#0F172A] uppercase tracking-wider mb-2">
+                  Or Paste Resume Text Below (Fallback)
                 </label>
                 <textarea
                   value={formData.rawResumeText || ''}
@@ -441,7 +467,7 @@ export const WelcomeProfile: React.FC<WelcomeProfileProps> = ({
                     setIsSaved(false);
                   }}
                   rows={10}
-                  className="w-full px-3.5 py-2 rounded-lg border border-[#E8DFCF] focus:border-[#14213D] text-xs font-mono text-[#14213D] bg-white outline-hidden leading-relaxed"
+                  className="w-full px-4 py-3 rounded-xl border border-[#CBD5E1] focus:border-[#14213D] text-xs font-mono text-[#0F172A] bg-white outline-hidden leading-relaxed shadow-xs"
                   placeholder="Paste your resume sections, coursework, and project descriptions here..."
                 />
               </div>

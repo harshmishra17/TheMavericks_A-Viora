@@ -127,7 +127,7 @@ export const RemindersModal: React.FC<RemindersModalProps> = ({
               value={title}
               onChange={e => setTitle(e.target.value)}
               placeholder="e.g. Practise attendance database explanation"
-              className="w-full p-2 text-xs rounded border border-[#E8DFCF] bg-white text-[#14213D]"
+              className="w-full p-2.5 text-xs rounded-lg border border-[#CBD5E1] bg-white text-[#0F172A] placeholder-[#64748B] focus:border-[#14213D] outline-hidden font-medium"
               required
             />
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
@@ -135,7 +135,7 @@ export const RemindersModal: React.FC<RemindersModalProps> = ({
                 type="datetime-local"
                 value={dueDate}
                 onChange={e => setDueDate(e.target.value)}
-                className="w-full p-2 text-xs rounded border border-[#E8DFCF] bg-white text-[#14213D] font-mono"
+                className="w-full p-2.5 text-xs rounded-lg border border-[#CBD5E1] bg-white text-[#0F172A] font-mono focus:border-[#14213D] outline-hidden font-medium"
                 required
               />
               <input
@@ -143,7 +143,7 @@ export const RemindersModal: React.FC<RemindersModalProps> = ({
                 value={notes}
                 onChange={e => setNotes(e.target.value)}
                 placeholder="Optional notes..."
-                className="w-full p-2 text-xs rounded border border-[#E8DFCF] bg-white text-[#14213D]"
+                className="w-full p-2.5 text-xs rounded-lg border border-[#CBD5E1] bg-white text-[#0F172A] placeholder-[#64748B] focus:border-[#14213D] outline-hidden font-medium"
               />
             </div>
           </div>

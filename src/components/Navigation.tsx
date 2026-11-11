@@ -46,14 +46,14 @@ export const Navigation: React.FC<NavigationProps> = ({
         {/* Brand Area */}
         <div className="p-6 border-b border-[#1E2F52]">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-lg bg-[#FF6B5B] flex items-center justify-center font-bold text-white text-lg font-display tracking-tight shadow-sm">
+            <div className="w-9 h-9 rounded-lg bg-[#FF6B5B] flex items-center justify-center font-extrabold text-[#14213D] text-lg font-display tracking-tight shadow-sm">
               A
             </div>
             <div>
               <span className="font-display font-bold text-xl tracking-tight text-white block leading-none">
                 A-viora
               </span>
-              <span className="text-[11px] text-[#F4EDE0]/60 font-medium tracking-normal mt-1 block">
+              <span className="text-[11px] text-[#F4EDE0]/80 font-medium tracking-normal mt-1 block">
                 AI Placement Companion
               </span>
             </div>

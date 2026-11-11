@@ -29,58 +29,58 @@ export const Header: React.FC<HeaderProps> = ({
   const pendingReminders = reminders.filter(r => !r.completed);
 
   return (
-    <header className="h-16 px-6 bg-[#F4EDE0] border-b border-[#E8DFCF] flex items-center justify-between gap-8 select-none shrink-0 sticky top-0 z-30">
+    <header className="h-16 px-6 bg-[#F4EDE0] border-b border-[#E2D9C8] flex items-center justify-between gap-8 select-none shrink-0 sticky top-0 z-30">
       {/* Zone 1: Single text element Brand Wordmark */}
       <div className="flex items-center gap-3">
         <button
           onClick={() => setActiveTab('overview')}
-          className="text-lg font-bold tracking-tight text-[#14213D] font-display whitespace-nowrap shrink-0 hover:text-[#FF6B5B] transition-colors"
+          className="text-lg font-bold tracking-tight text-[#0F172A] font-display whitespace-nowrap shrink-0 hover:text-[#FF6B5B] transition-colors"
         >
           A-viora
         </button>
-        <span className="hidden sm:inline-block text-xs text-[#14213D]/50 font-normal">
+        <span className="hidden sm:inline-block text-xs text-[#334155] font-medium">
           / {activeTab.charAt(0).toUpperCase() + activeTab.slice(1)}
         </span>
       </div>
 
       {/* Zone 2: Concise single-line text links */}
-      <nav className="hidden lg:flex items-center gap-6 text-sm font-medium text-[#14213D]/75">
+      <nav className="hidden lg:flex items-center gap-6 text-sm font-semibold text-[#334155]">
         <button
           onClick={() => setActiveTab('overview')}
-          className={`hover:text-[#14213D] transition-colors whitespace-nowrap shrink-0 ${
-            activeTab === 'overview' ? 'text-[#14213D] font-semibold underline underline-offset-4 decoration-[#FF6B5B]' : ''
+          className={`hover:text-[#0F172A] transition-colors whitespace-nowrap shrink-0 ${
+            activeTab === 'overview' ? 'text-[#0F172A] font-bold underline underline-offset-4 decoration-[#FF6B5B]' : ''
           }`}
         >
           Overview
         </button>
         <button
           onClick={() => setActiveTab('opportunities')}
-          className={`hover:text-[#14213D] transition-colors whitespace-nowrap shrink-0 ${
-            activeTab === 'opportunities' ? 'text-[#14213D] font-semibold underline underline-offset-4 decoration-[#FF6B5B]' : ''
+          className={`hover:text-[#0F172A] transition-colors whitespace-nowrap shrink-0 ${
+            activeTab === 'opportunities' ? 'text-[#0F172A] font-bold underline underline-offset-4 decoration-[#FF6B5B]' : ''
           }`}
         >
           Opportunities
         </button>
         <button
           onClick={() => setActiveTab('studio')}
-          className={`hover:text-[#14213D] transition-colors whitespace-nowrap shrink-0 ${
-            activeTab === 'studio' ? 'text-[#14213D] font-semibold underline underline-offset-4 decoration-[#FF6B5B]' : ''
+          className={`hover:text-[#0F172A] transition-colors whitespace-nowrap shrink-0 ${
+            activeTab === 'studio' ? 'text-[#0F172A] font-bold underline underline-offset-4 decoration-[#FF6B5B]' : ''
           }`}
         >
           Application Studio
         </button>
         <button
           onClick={() => setActiveTab('tracker')}
-          className={`hover:text-[#14213D] transition-colors whitespace-nowrap shrink-0 ${
-            activeTab === 'tracker' ? 'text-[#14213D] font-semibold underline underline-offset-4 decoration-[#FF6B5B]' : ''
+          className={`hover:text-[#0F172A] transition-colors whitespace-nowrap shrink-0 ${
+            activeTab === 'tracker' ? 'text-[#0F172A] font-bold underline underline-offset-4 decoration-[#FF6B5B]' : ''
           }`}
         >
           Approval & Tracker
         </button>
         <button
           onClick={() => setActiveTab('practice')}
-          className={`hover:text-[#14213D] transition-colors whitespace-nowrap shrink-0 ${
-            activeTab === 'practice' ? 'text-[#14213D] font-semibold underline underline-offset-4 decoration-[#FF6B5B]' : ''
+          className={`hover:text-[#0F172A] transition-colors whitespace-nowrap shrink-0 ${
+            activeTab === 'practice' ? 'text-[#0F172A] font-bold underline underline-offset-4 decoration-[#FF6B5B]' : ''
           }`}
         >
           Interview Practice
@@ -92,18 +92,18 @@ export const Header: React.FC<HeaderProps> = ({
         {/* Student Quick Badge */}
         <button
           onClick={() => setActiveTab('welcome')}
-          className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-md bg-[#E8DFCF]/60 hover:bg-[#E8DFCF] text-[#14213D] text-xs transition-colors"
+          className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[#FAF7F2] hover:bg-[#E2D9C8] text-[#0F172A] text-xs font-medium border border-[#E2D9C8] transition-colors shadow-xs"
           title="Review or switch profile"
         >
-          <User className="w-3.5 h-3.5 text-[#14213D]/70" />
-          <span className="font-semibold">{studentName}</span>
-          <span className="text-[#14213D]/60 hidden xl:inline">· {targetRole}</span>
+          <User className="w-3.5 h-3.5 text-[#334155]" />
+          <span className="font-bold text-[#0F172A]">{studentName}</span>
+          <span className="text-[#334155] hidden xl:inline">· {targetRole}</span>
         </button>
 
         {/* Reset sample button */}
         <button
           onClick={onResetSample}
-          className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md border border-[#E8DFCF] hover:bg-[#E8DFCF]/50 text-xs text-[#14213D]/70 hover:text-[#14213D] transition-colors"
+          className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-[#E2D9C8] hover:bg-[#FAF7F2] text-xs font-semibold text-[#334155] hover:text-[#0F172A] transition-colors"
           title="Restore sample student (Riya Sharma)"
         >
           <RefreshCw className="w-3.5 h-3.5" />
@@ -113,7 +113,7 @@ export const Header: React.FC<HeaderProps> = ({
         {/* Reminders Bell with unboxed count */}
         <button
           onClick={onOpenReminders}
-          className="relative p-2 rounded-md hover:bg-[#E8DFCF] text-[#14213D]/80 hover:text-[#14213D] transition-colors"
+          className="relative p-2 rounded-lg hover:bg-[#E2D9C8] text-[#0F172A] transition-colors"
           title="Upcoming reminders"
           aria-label="Upcoming reminders"
         >
@@ -126,9 +126,9 @@ export const Header: React.FC<HeaderProps> = ({
         {/* Chat Toggle Button */}
         <button
           onClick={toggleChat}
-          className={`flex items-center gap-2 px-3.5 py-1.5 rounded-md text-xs font-semibold transition-colors shadow-xs ${
+          className={`flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-bold transition-colors shadow-xs ${
             isChatOpen
-              ? 'bg-[#14213D] text-[#F4EDE0]'
+              ? 'bg-[#14213D] text-[#F8FAFC] hover:bg-[#1E2F52]'
               : 'bg-[#FF6B5B] text-[#14213D] hover:bg-[#E05A4A]'
           }`}
         >

@@ -9,7 +9,11 @@ import {
   SAMPLE_STUDENT,
   FICTIONAL_JOB_LISTINGS,
   INITIAL_APPLICATION,
-  INITIAL_REMINDERS
+  INITIAL_REMINDERS,
+  INITIAL_JOB_ANALYSIS,
+  INITIAL_SKILL_GAP_REPORT,
+  INITIAL_ROADMAP,
+  INITIAL_JOB_QUESTIONS
 } from './src/data/defaultData.ts';
 import {
   StudentProfile,
@@ -21,7 +25,11 @@ import {
   SavedWeakArea,
   ChatMessage,
   AppActivity,
-  ProjectClaim
+  ProjectClaim,
+  JobDescriptionAnalysis,
+  SkillGapReport,
+  PreparationRoadmap,
+  JobInterviewQuestion
 } from './src/types/index.ts';
 
 dotenv.config();
@@ -36,6 +44,10 @@ let currentProfile: StudentProfile = JSON.parse(JSON.stringify(SAMPLE_STUDENT));
 let currentJobs: JobOpportunity[] = JSON.parse(JSON.stringify(FICTIONAL_JOB_LISTINGS));
 let currentApplication: ApplicationDraft = JSON.parse(JSON.stringify(INITIAL_APPLICATION));
 let currentReminders: ReminderItem[] = JSON.parse(JSON.stringify(INITIAL_REMINDERS));
+let currentJobAnalysis: JobDescriptionAnalysis = JSON.parse(JSON.stringify(INITIAL_JOB_ANALYSIS));
+let currentSkillGapReport: SkillGapReport = JSON.parse(JSON.stringify(INITIAL_SKILL_GAP_REPORT));
+let currentRoadmap: PreparationRoadmap = JSON.parse(JSON.stringify(INITIAL_ROADMAP));
+let currentJobQuestions: JobInterviewQuestion[] = JSON.parse(JSON.stringify(INITIAL_JOB_QUESTIONS));
 let interviewHistory: InterviewAttempt[] = [
   {
     id: 'att-seed-1',
@@ -99,6 +111,10 @@ function loadMemoryFromDisk() {
       if (data.jobs && Array.isArray(data.jobs)) currentJobs = data.jobs;
       if (data.application) currentApplication = data.application;
       if (data.reminders && Array.isArray(data.reminders)) currentReminders = data.reminders;
+      if (data.jobAnalysis) currentJobAnalysis = data.jobAnalysis;
+      if (data.skillGapReport) currentSkillGapReport = data.skillGapReport;
+      if (data.roadmap) currentRoadmap = data.roadmap;
+      if (data.jobQuestions && Array.isArray(data.jobQuestions)) currentJobQuestions = data.jobQuestions;
       if (data.interviewHistory && Array.isArray(data.interviewHistory)) interviewHistory = data.interviewHistory;
       if (data.weakAreas && Array.isArray(data.weakAreas)) weakAreas = data.weakAreas;
       if (data.chatHistory && Array.isArray(data.chatHistory)) chatHistory = data.chatHistory;
@@ -118,6 +134,10 @@ function saveMemoryToDisk() {
       jobs: currentJobs,
       application: currentApplication,
       reminders: currentReminders,
+      jobAnalysis: currentJobAnalysis,
+      skillGapReport: currentSkillGapReport,
+      roadmap: currentRoadmap,
+      jobQuestions: currentJobQuestions,
       interviewHistory,
       weakAreas,
       chatHistory,
@@ -487,6 +507,88 @@ async function startServer() {
     res.json(result.data);
   });
 
+  // --- End-to-End Placement Workflow: Job Analysis, Skill Gap & 7-Day Roadmap ---
+  app.get('/api/analysis', (req: Request, res: Response) => {
+    res.json({
+      analysis: currentJobAnalysis,
+      gapReport: currentSkillGapReport,
+      roadmap: currentRoadmap,
+      questions: currentJobQuestions,
+      jobQuestions: currentJobQuestions
+    });
+  });
+
+  app.post('/api/analyze-job', async (req: Request, res: Response) => {
+    const { jobId, jobDescriptionText, description, role: customRole, company: customCompany } = req.body;
+
+    let targetRole = customRole || 'Backend Engineering Intern';
+    let targetCompany = customCompany || 'AcuityLogix Systems (Fictional)';
+    let rawJd = jobDescriptionText || description || '';
+
+    if (jobId) {
+      const foundJob = currentJobs.find(j => j.id === jobId);
+      if (foundJob) {
+        targetRole = foundJob.role;
+        targetCompany = foundJob.company;
+        if (!rawJd) {
+          rawJd = `Role: ${foundJob.role} at ${foundJob.company}. Location: ${foundJob.location} (${foundJob.type}). Description: ${foundJob.description}. Required Skills: ${foundJob.requiredSkills.join(', ')}.`;
+        }
+      }
+    }
+
+    if (!rawJd && !jobId) {
+      return res.status(400).json({ error: 'Please provide either a jobId or jobDescriptionText.' });
+    }
+
+    try {
+      const result = await runAIJobAnalysisAndRoadmap(rawJd, targetRole, targetCompany, currentProfile);
+      currentJobAnalysis = result.analysis;
+      currentSkillGapReport = result.gapReport;
+      currentRoadmap = result.roadmap;
+      currentJobQuestions = result.questions;
+
+      // Update current application target
+      currentApplication.role = targetRole;
+      currentApplication.company = targetCompany;
+      currentApplication.lastSavedAt = new Date().toISOString();
+
+      saveMemoryToDisk();
+      logActivity(`Ran AI Job Analysis & generated 7-Day Roadmap for ${targetRole} at ${targetCompany}.`, 'roadmap');
+
+      res.json({
+        success: true,
+        analysis: currentJobAnalysis,
+        gapReport: currentSkillGapReport,
+        roadmap: currentRoadmap,
+        questions: currentJobQuestions,
+        jobQuestions: currentJobQuestions
+      });
+    } catch (err: any) {
+      console.error('Error running AI job analysis:', err);
+      res.status(500).json({ error: 'Failed to complete AI analysis. ' + (err.message || '') });
+    }
+  });
+
+  app.post('/api/roadmap/toggle-task', (req: Request, res: Response) => {
+    const { dayNumber, taskIndex, taskId, completed } = req.body;
+
+    if (taskId) {
+      const day = currentRoadmap.dailyPlan.find(d => d.id === taskId);
+      if (day) {
+        day.completed = completed !== undefined ? completed : !day.completed;
+      }
+    } else if (dayNumber !== undefined) {
+      const day = currentRoadmap.dailyPlan.find(d => d.dayNumber === dayNumber);
+      if (day) {
+        day.completed = completed !== undefined ? completed : !day.completed;
+      }
+    }
+
+    saveMemoryToDisk();
+    res.json({ success: true, roadmap: currentRoadmap });
+  });
+
+
   // Claims & Clarification endpoints
   app.get('/api/claims', (req: Request, res: Response) => {
     res.json(currentProfile.claims);
@@ -813,6 +915,409 @@ function evaluateInterviewAnswer(question: string, answer: string, profile: Stud
   };
 }
 
+// --- AI Job Description Analysis, Resume Matching & 7-Day Roadmap Engine ---
+async function runAIJobAnalysisAndRoadmap(
+  rawJd: string,
+  targetRole: string,
+  targetCompany: string,
+  student: StudentProfile
+): Promise<{
+  analysis: JobDescriptionAnalysis;
+  gapReport: SkillGapReport;
+  roadmap: PreparationRoadmap;
+  questions: JobInterviewQuestion[];
+}> {
+  const now = new Date().toISOString();
+
+  // Try Live Gemini 3.8 Flash model first if configured
+  if (genAI) {
+    try {
+      const prompt = `Analyze this job posting for "${targetRole}" at "${targetCompany}":
+JOB DESCRIPTION:
+"""${rawJd}"""
+
+CANDIDATE PROFILE:
+Name: ${student.name}
+Target Role: ${student.targetRole}
+Verified Skills: ${student.skills.join(', ')}
+Project: ${student.projectTitle}
+Contribution: ${student.personalContribution}
+Resume Text: ${student.rawResumeText || ''}
+
+Return a valid JSON object matching this exact schema:
+{
+  "analysis": {
+    "role": "${targetRole}",
+    "company": "${targetCompany}",
+    "extractedSkills": ["string"],
+    "qualifications": ["string"],
+    "responsibilities": ["string"],
+    "keywords": ["string"]
+  },
+  "gapReport": {
+    "jobRole": "${targetRole}",
+    "company": "${targetCompany}",
+    "matchedSkills": [{"skill": "string", "evidence": "string"}],
+    "missingSkills": [{"skill": "string", "importance": "high"|"medium"|"low", "reason": "string"}],
+    "matchAssessment": "string",
+    "confidenceAlignment": "Strong Alignment"|"Moderate Alignment with Gaps"|"Foundational Learning Required"
+  },
+  "roadmap": {
+    "targetRole": "${targetRole}",
+    "company": "${targetCompany}",
+    "prioritySkills": [{"skill": "string", "priority": 1, "rationale": "string"}],
+    "dailyPlan": [
+      {
+        "id": "day-1",
+        "dayNumber": 1,
+        "title": "string",
+        "objective": "string",
+        "tasks": ["string"],
+        "estimatedHours": 2,
+        "completed": false
+      }
+    ],
+    "projectImprovements": ["string"],
+    "interviewTopics": ["string"]
+  },
+  "questions": [
+    {
+      "id": "jq-1",
+      "question": "string",
+      "category": "Technical"|"Architecture"|"Behavioral / HR"|"Project Deep-dive",
+      "context": "string",
+      "expectedKeyPoints": ["string"]
+    }
+  ]
+}
+Note: "dailyPlan" must have exactly 7 structured days (day-1 to day-7), and "questions" must have at least 5 job-specific interview questions.`;
+
+      const timeoutPromise = new Promise((_, reject) =>
+        setTimeout(() => reject(new Error('AI generation timeout (fallback to domain engine)')), 8500)
+      );
+
+      const aiResponse: any = await Promise.race([
+        genAI.models.generateContent({
+          model: 'gemini-3.8-flash',
+          contents: prompt,
+          config: {
+            responseMimeType: 'application/json',
+            systemInstruction: 'You are A-viora, an honest AI placement co-pilot. Ground all candidate assessments strictly in verified evidence. Never invent skills or qualifications.'
+          }
+        }),
+        timeoutPromise
+      ]);
+
+      const responseText = aiResponse.text?.trim() || '';
+      if (responseText) {
+        const parsed = JSON.parse(responseText);
+        if (parsed.analysis && parsed.gapReport && parsed.roadmap && parsed.questions) {
+          parsed.analysis.id = `analysis-${Date.now()}`;
+          parsed.analysis.rawText = rawJd;
+          parsed.analysis.analyzedAt = now;
+
+          parsed.gapReport.id = `gap-${Date.now()}`;
+          parsed.gapReport.jobRole = targetRole;
+          parsed.gapReport.company = targetCompany;
+          parsed.gapReport.analyzedAt = now;
+
+          parsed.roadmap.id = `roadmap-${Date.now()}`;
+          parsed.roadmap.targetRole = targetRole;
+          parsed.roadmap.company = targetCompany;
+          parsed.roadmap.generatedAt = now;
+
+          parsed.roadmap.dailyPlan = (parsed.roadmap.dailyPlan || []).map((d: any, idx: number) => ({
+            id: d.id || `day-${idx + 1}`,
+            dayNumber: d.dayNumber || idx + 1,
+            title: d.title || `Day ${idx + 1}: Technical Prep`,
+            objective: d.objective || 'Focus on target role requirements',
+            tasks: Array.isArray(d.tasks) ? d.tasks : [d.tasks || 'Review key concepts'],
+            estimatedHours: d.estimatedHours || 2,
+            completed: false
+          }));
+
+          parsed.questions = (parsed.questions || []).map((q: any, idx: number) => ({
+            id: q.id || `jq-${idx + 1}`,
+            question: q.question,
+            category: q.category || (idx < 3 ? 'Technical' : 'Behavioral / HR'),
+            context: q.context || `${targetRole} — ${targetCompany}`,
+            expectedKeyPoints: Array.isArray(q.expectedKeyPoints) ? q.expectedKeyPoints : []
+          }));
+
+          return parsed;
+        }
+      }
+    } catch (apiErr) {
+      console.warn('Gemini 3.8 Flash live analysis call failed, using intelligent domain fallback:', apiErr);
+    }
+  }
+
+  // --- Intelligent Local Engine Fallback (Grounded in Candidate Project Facts) ---
+  const lowerJd = rawJd.toLowerCase();
+  const knownSkills = [
+    { name: 'Python', pattern: /python/i, evidence: 'Engineered Python Flask REST endpoints for recording daily attendance and exporting CSV summaries.' },
+    { name: 'SQL & Relational Schema', pattern: /sql|postgres|database|schema/i, evidence: 'Designed relational schema with unique composite constraints and indexed queries in schema.sql.' },
+    { name: 'REST APIs', pattern: /api|rest|endpoint/i, evidence: 'Built Flask API routes for CSV exports and session verification in app.py.' },
+    { name: 'Git', pattern: /git|version control/i, evidence: '4-person team attendance repo with modular architecture and Git branching.' },
+    { name: 'Flask', pattern: /flask/i, evidence: 'Authored Flask web service and CSV export controllers.' }
+  ];
+
+  const matchedSkills: { skill: string; evidence: string }[] = [];
+  const missingSkills: { skill: string; importance: 'high' | 'medium' | 'low'; reason: string }[] = [];
+
+  for (const s of knownSkills) {
+    if (s.pattern.test(lowerJd)) {
+      matchedSkills.push({ skill: s.name, evidence: s.evidence });
+    }
+  }
+
+  // Detect missing skills from JD
+  if (/docker|container|kubernetes/i.test(lowerJd)) {
+    missingSkills.push({
+      skill: 'Docker Containerization',
+      importance: 'high',
+      reason: 'Requested for microservice packaging and local testing; not yet evidenced in student attendance repo.'
+    });
+  }
+  if (/microservice|distributed|kafka|rabbitmq|grpc/i.test(lowerJd)) {
+    missingSkills.push({
+      skill: 'Microservices & Message Queues',
+      importance: 'medium',
+      reason: 'Target role emphasizes distributed service communication; candidate attendance portal is a modular monolith.'
+    });
+  }
+  if (/redis|caching|memcached/i.test(lowerJd)) {
+    missingSkills.push({
+      skill: 'In-Memory Caching (Redis)',
+      importance: 'medium',
+      reason: 'Required for fast session lookups and caching; candidate currently uses direct relational queries.'
+    });
+  }
+  if (/ci\/cd|github actions|jenkins/i.test(lowerJd)) {
+    missingSkills.push({
+      skill: 'CI/CD Automated Pipelines',
+      importance: 'low',
+      reason: 'Preferred for automated build validation; candidate uses standard manual Git workflows.'
+    });
+  }
+
+  if (matchedSkills.length === 0) {
+    matchedSkills.push({ skill: 'Python', evidence: 'Core programming language used throughout attendance management project.' });
+    matchedSkills.push({ skill: 'SQL & Database Modeling', evidence: 'Designed relational tables, constraints, and query scripts in schema.sql.' });
+  }
+
+  const analysis: JobDescriptionAnalysis = {
+    id: `analysis-${Date.now()}`,
+    role: targetRole,
+    company: targetCompany,
+    rawText: rawJd,
+    extractedSkills: [...matchedSkills.map(m => m.skill), ...missingSkills.map(m => m.skill)],
+    qualifications: [
+      'Pursuing or completed degree in Computer Science, IT, or related technical field',
+      'Solid command of Python programming and relational database modeling',
+      'Familiarity with RESTful API architecture and clean error handling',
+      missingSkills.length > 0 ? `Exposure to ${missingSkills[0].skill} is an advantage` : 'Self-driven team collaborator'
+    ],
+    responsibilities: [
+      `Design and maintain reliable backend services for ${targetCompany}`,
+      'Optimize database queries and ensure transactional integrity across services',
+      'Collaborate in team code reviews, documentation, and version control',
+      'Participate in technical sprint planning and system testing'
+    ],
+    keywords: [targetRole, 'Python', 'SQL', 'REST APIs', ...missingSkills.map(m => m.skill)],
+    analyzedAt: now
+  };
+
+  const gapReport: SkillGapReport = {
+    id: `gap-${Date.now()}`,
+    jobRole: targetRole,
+    company: targetCompany,
+    matchedSkills,
+    missingSkills,
+    matchAssessment: `You have strong hands-on alignment for ${matchedSkills.map(m => m.skill).join(' and ')} backed by your college attendance project code. ${
+      missingSkills.length > 0
+        ? `The primary growth area is ${missingSkills.map(m => m.skill).join(', ')}, which you can address in your 7-day preparation roadmap.`
+        : 'Your verified skills align directly with all essential technical requirements.'
+    }`,
+    confidenceAlignment: missingSkills.length > 2 ? 'Moderate Alignment with Gaps' : 'Strong Alignment',
+    analyzedAt: now
+  };
+
+  const roadmap: PreparationRoadmap = {
+    id: `roadmap-${Date.now()}`,
+    targetRole,
+    company: targetCompany,
+    prioritySkills: missingSkills.length > 0
+      ? missingSkills.map((m, idx) => ({ skill: m.skill, priority: idx + 1, rationale: m.reason }))
+      : [{ skill: 'Query Tuning & Concurrency', priority: 1, rationale: 'Deepen core relational knowledge for technical screens' }],
+    dailyPlan: [
+      {
+        id: 'day-1',
+        dayNumber: 1,
+        title: `Grounded Review: ${matchedSkills[0]?.skill || 'Python'} & ${matchedSkills[1]?.skill || 'SQL'}`,
+        objective: `Audit your attendance repository files (schema.sql, db_queries.py) to anchor candidate talking points.`,
+        tasks: [
+          'Review composite unique constraints on student ID and session date',
+          'Document exact retrieval benchmark (<50ms for 350+ records)',
+          'Ensure local development environment runs cleanly'
+        ],
+        estimatedHours: 2,
+        completed: true
+      },
+      {
+        id: 'day-2',
+        dayNumber: 2,
+        title: `Bridge Growth Gap: ${missingSkills[0]?.skill || 'Containerization Basics'}`,
+        objective: `Address the primary missing skill from ${targetCompany}'s requirements.`,
+        tasks: [
+          `Research how ${missingSkills[0]?.skill || 'Docker'} integrates with Python microservices`,
+          'Draft a lightweight proof-of-concept configuration in your project repository',
+          'Prepare a concise explanation of how this bridges to production systems'
+        ],
+        estimatedHours: 2.5,
+        completed: false
+      },
+      {
+        id: 'day-3',
+        dayNumber: 3,
+        title: 'REST Error Handling & Transaction Idempotency',
+        objective: 'Practice translating database exceptions into clean HTTP status codes.',
+        tasks: [
+          'Map database unique constraint collisions to HTTP 409 Conflict',
+          'Ensure JSON error responses contain helpful troubleshooting codes',
+          'Write a unit test asserting duplicate attendance submissions are caught cleanly'
+        ],
+        estimatedHours: 2,
+        completed: false
+      },
+      {
+        id: 'day-4',
+        dayNumber: 4,
+        title: 'Database Concurrency & Transaction Isolation',
+        objective: 'Master answering multi-user submission scenarios under peak morning loads.',
+        tasks: [
+          'Understand Read Committed vs Serializable isolation levels in SQL',
+          'Learn row-level locking behavior during concurrent INSERT transactions',
+          'Prepare explanation of connection pool limits in Python applications'
+        ],
+        estimatedHours: 2.5,
+        completed: false
+      },
+      {
+        id: 'day-5',
+        dayNumber: 5,
+        title: 'Documentation & Collaborative Boundaries',
+        objective: 'Update project documentation so individual contributions are unmistakable.',
+        tasks: [
+          'Update GitHub README with an explicit architecture diagram showing the database tier',
+          'Clarify individual ownership vs teammate contributions in the attendance project',
+          'Eliminate ambiguous "built everything" claims from resume draft'
+        ],
+        estimatedHours: 1.5,
+        completed: false
+      },
+      {
+        id: 'day-6',
+        dayNumber: 6,
+        title: `Mock Interview: ${targetRole} Specifics`,
+        objective: `Drill 5 job-specific interview questions tailored for ${targetCompany}.`,
+        tasks: [
+          'Answer technical questions on schema design, query plans, and concurrency',
+          'Practice STAR method answer for collaborative disagreements',
+          'Review AI feedback on technical precision and save any weak areas'
+        ],
+        estimatedHours: 2,
+        completed: false
+      },
+      {
+        id: 'day-7',
+        dayNumber: 7,
+        title: 'Final Document Review & Simulated Application',
+        objective: 'Approve finalized, verified resume and simulate submission to obtain dispatch receipt.',
+        tasks: [
+          'Review resume version and verify all included claims are backed by code',
+          'Download finalized PDF documents locally using the export tool',
+          'Click Approve and simulate sending to record audit receipt'
+        ],
+        estimatedHours: 1.5,
+        completed: false
+      }
+    ],
+    projectImprovements: [
+      `Add a multi-stage Dockerfile to the attendance repository root for containerized deployment.`,
+      `Implement an automated pytest harness testing the HTTP 409 duplicate attendance exception.`,
+      `Document query execution plans (EXPLAIN ANALYZE) before and after composite indexing in schema.sql.`
+    ],
+    interviewTopics: [
+      'Composite indexing vs single-column indexing in relational tables',
+      'Handling concurrent API requests without returning unhandled 500 exceptions',
+      'Communicating team project ownership honestly to hiring managers',
+      'Explaining tradeoffs between monolithic scripts and containerized microservices'
+    ],
+    generatedAt: now
+  };
+
+  const questions: JobInterviewQuestion[] = [
+    {
+      id: 'jq-1',
+      question: `In your attendance project, you configured composite unique constraints and indexing. How would that design hold up under ${targetCompany}'s high-throughput requirements, and what happens to write performance?`,
+      category: 'Technical',
+      context: `${targetRole} — Database Modeling & Query Performance`,
+      expectedKeyPoints: [
+        'B-tree index depth increases logarithmically O(log N)',
+        'Composite index evaluates leftmost column first',
+        'Indexes impose a small write penalty on INSERTs while speeding up SELECTs'
+      ]
+    },
+    {
+      id: 'jq-2',
+      question: `${targetCompany} builds scalable microservices. If our API receives 100 simultaneous attendance logs at 9:00 AM, how do you prevent race conditions and duplicate records without locking the whole table?`,
+      category: 'Architecture',
+      context: `${targetRole} — Concurrency & Locking`,
+      expectedKeyPoints: [
+        'Row-level locking vs table locking',
+        'Composite unique constraint enforces atomicity at the storage engine level',
+        'Catch IntegrityError and return 409 Conflict'
+      ]
+    },
+    {
+      id: 'jq-3',
+      question: `${missingSkills[0]?.skill || 'Containerization'} is highlighted in this job description. How would you package your Flask and SQL application into a lightweight container, and how do you handle database migrations?`,
+      category: 'Technical',
+      context: `${missingSkills[0]?.skill || 'Docker & Environment Packaging'}`,
+      expectedKeyPoints: [
+        'Lightweight base image (e.g. python:3.11-slim)',
+        'Multi-stage builds to minimize attack surface',
+        'Running schema migrations before worker processes bind to port'
+      ]
+    },
+    {
+      id: 'jq-4',
+      question: `Your college attendance system was built with a team of four. Can you describe a technical disagreement you had regarding the database schema or API contract, and how you resolved it?`,
+      category: 'Behavioral / HR',
+      context: 'Team Collaboration & Communication (STAR Method)',
+      expectedKeyPoints: [
+        'Context of disagreement with team members',
+        'Action taken: testing or prototyping evidence',
+        'Resolution: team alignment and mutual delivery'
+      ]
+    },
+    {
+      id: 'jq-5',
+      question: `What excites you about the ${targetRole} role at ${targetCompany}, and how does your project experience set you up to contribute from day one?`,
+      category: 'Behavioral / HR',
+      context: 'Role Fit & Engineering Motivation',
+      expectedKeyPoints: [
+        'Demonstrated interest in data platform reliability',
+        'Realistic humility about skills to learn alongside senior engineers',
+        'Commitment to honest, evidence-backed software'
+      ]
+    }
+  ];
+
+  return { analysis, gapReport, roadmap, questions };
+}
+
 // Gemini Agent with Real Tool Calling & Strict Student Approval Gating
 async function executeGeminiAgentWithTools(userText: string): Promise<ChatMessage> {
   if (!genAI) throw new Error('Gemini API not configured');
@@ -822,6 +1327,7 @@ Core rules:
 - Work strictly with the student's real project facts: ${currentProfile.name}, target role: ${currentProfile.targetRole}, skills: ${currentProfile.skills.join(', ')}.
 - Project: ${currentProfile.projectTitle} (attendance portal). Personal contribution: ${currentProfile.personalContribution}.
 - Current Application: ${currentApplication.role} at ${currentApplication.company} (Status: ${currentApplication.status}, Approved: ${currentApplication.status === 'Approved'}).
+- Active Roadmap: 7-day preparation roadmap exists for ${currentRoadmap.targetRole} with ${currentRoadmap.dailyPlan.filter(d => d.completed).length} of 7 days completed.
 - MUST HAVE BEHAVIORS:
   1. Real Tool Calls: Use available tools when appropriate:
      - 'search_jobs' when searching for roles or internships
@@ -831,18 +1337,25 @@ Core rules:
      - 'check_application_approval' when asked to send, submit, or check application status
      - 'save_clarification' when clarifying a team claim
   2. Strict Student Approval Gating: You MUST NEVER send or claim an application was sent without student's explicit approval. If asked to send an unapproved application, check approval and inform the student that approval is required in the Applications tracker first.
-  3. Memory: Recall student's past practice, weak areas, and saved documents.
+  3. Memory: Recall student's past practice, weak areas, active roadmap, and saved documents.
 - Tone: Warm, practical, non-judgmental. Ask one focused question at a time. Never promise guaranteed hiring.`;
 
-  // First turn: generate content with tools
+  // First turn: generate content with tools (including Google Search)
+  const tools = [
+    { googleSearch: {} },
+    ...AGENT_TOOLS
+  ];
+
   const response = await genAI.models.generateContent({
     model: 'gemini-3.8-flash',
     contents: userText,
     config: {
       systemInstruction,
-      tools: AGENT_TOOLS
+      tools,
+      toolConfig: { includeServerSideToolInvocations: true }
     }
   });
+
 
   const toolActivities: ChatMessage['toolActivities'] = [];
   const suggestedActions: ChatMessage['suggestedActions'] = [];
